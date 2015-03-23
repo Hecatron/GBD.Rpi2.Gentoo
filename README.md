@@ -31,7 +31,8 @@ Install:
   * [1.1 Gentoo - Initial Stage3 Setup](docs/1.1 Gentoo - Initial Stage3 Setup.md)
   * [1.2 Gentoo - Setup of Chroot](docs/1.2 Gentoo - Setup of Chroot.md)
   * [1.3 Gentoo - Setup of Bootloader and Kernel Mods](docs/1.3 Gentoo - Setup of Bootloader and Kernel Mods.md)
-  * [1.4 Gentoo - Final Setup](docs/1.4 Gentoo - Final Setup.md)
+  * [1.4 Gentoo - Post Boot Setup](docs/1.4 Gentoo - Post Boot Setup.md)
+  * [1.5 Gentoo - Additional Packages](docs/1.5 Gentoo - Additional Packages.md)
 
 Other:
 
