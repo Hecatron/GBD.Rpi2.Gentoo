@@ -33,6 +33,7 @@ Install:
   * [1.3 Gentoo - Setup of Bootloader and Kernel Mods](docs/1.3 Gentoo - Setup of Bootloader and Kernel Mods.md)
   * [1.4 Gentoo - Post Boot Setup](docs/1.4 Gentoo - Post Boot Setup.md)
   * [1.5 Gentoo - Additional Packages](docs/1.5 Gentoo - Additional Packages.md)
+  * [1.6 Custom Overlays](docs/1.6 Custom Overlays.md)
 
 Other:
 
@@ -40,3 +41,4 @@ Other:
   * [2.2 Video Output](docs/2.2 Video Output.md)
   * [2.3 Cross Compiling](docs/2.3 Cross Compiling.md)
   * [2.4 Overclocking](docs/2.4 Overclocking.md)
+  * [2.5 Custom Kernel](docs/2.5 Custom Kernel.md)
