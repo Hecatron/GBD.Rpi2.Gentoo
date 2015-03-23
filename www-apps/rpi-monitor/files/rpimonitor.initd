@@ -1,0 +1,39 @@
+#!/sbin/runscript
+# Copyright (c) 2013 Stuart Shelton <stuart@shelton.me>
+# Distributed under the terms of the GNU General Public License v2
+
+PERL="$( type -pf perl )"
+NAME=rpimonitord
+PIDFILE=/var/run/$NAME.pid
+DAEMON=/usr/sbin/$NAME
+DAEMON_ARGS="-b ${PIDFILE}"
+
+depend() {
+	need net
+}
+
+start() {
+	[[ -x "$PERL" ]] || { eerror "Cannot locate perl binary" ; return 1 ; }
+
+	ebegin "Starting RPi Monitor"
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $PERL -- $DAEMON $DAEMON_ARGS
+	eend $? "Unable to start RPi Monitor"
+}
+
+stop() {
+	local pid pids rc
+	[[ -r "$PIDFILE" ]] && pids="$( cat "$PIDFILE" )"
+
+	ebegin "Stopping RPi Monitor"
+	start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --exec $PERL
+	rc=$?
+	[[ -n "$pids" ]] && for pid in $pids; do
+		ps -o args= $pid | grep -q "${PIDFILE}$" && {
+			eindent
+			einfo "Sending HUP signal to child $pid ..."
+			kill -HUP $pid
+			eoutdent
+		}
+	done
+	eend $rc "Unable to stop RPi Monitor"
+}
