@@ -38,8 +38,8 @@ fi
 S="${WORKDIR}/RPi-Monitor-${PV}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/default.conf-"${PV:0:3}".patch \
-		|| die "epatch failed"
+	#epatch "${FILESDIR}"/default.conf-"${PV:0:3}".patch \
+	#	|| die "epatch failed"
 
 	# Fix version string...
 	sed -i \
