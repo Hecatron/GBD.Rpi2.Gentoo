@@ -20,7 +20,7 @@ EGIT_BRANCH="rpi-$(get_version_component_range 1-2).y"
 DESCRIPTION="Raspberry PI kernel sources"
 HOMEPAGE="https://github.com/raspberrypi/linux"
 
-KEYWORDS=""
+KEYWORDS="~*"
 
 src_unpack() {
 	git-2_src_unpack
