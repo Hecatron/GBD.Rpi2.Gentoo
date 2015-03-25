@@ -1,0 +1,78 @@
+--- rpimonitor/template/version.conf.dist	2015-03-14 14:52:23.219612000 +0000
++++ rpimonitor/template/version.conf	2015-03-14 15:48:29.459612000 +0000
+@@ -9,6 +9,7 @@
+ #  - num of pkg upgradable   - yes      - no
+ #  - list of pkg upgradable  - yes      - no
+ ########################################################################
++
+ static.1.name=distribution
+ static.1.source=/etc/os-release
+ static.1.regexp=PRETTY_NAME.\"(.*)\"
+@@ -20,8 +21,10 @@
+ static.2.postprocess=
+ 
+ static.3.name=firmware
+-static.3.source=/proc/version
+-static.3.regexp=(#\d+)
++#static.3.source=/proc/version
++#static.3.regexp=(#\d+)
++static.3.source=/usr/bin/strings /boot/start_cd.elf
++static.3.regexp=^VC_BUILD_ID_VERSION:\s+(\S+) 
+ static.3.postprocess=
+ 
+ static.4.name=processor
+@@ -29,22 +32,39 @@
+ static.4.regexp=(?:Processor|model name)\s+: (.*)
+ static.4.postprocess=
+ 
+-dynamic.1.name=upgrade
+-dynamic.1.source=/var/lib/rpimonitor/updatestatus.txt
+-dynamic.1.regexp=(\d+ upgradable\(s\)|.*&nbsp;.*)
+-dynamic.1.postprocess=
+-dynamic.1.rrd=
+-
+-dynamic.2.name=packages
+-dynamic.2.source=/var/lib/rpimonitor/updatestatus.txt
+-dynamic.2.regexp=^\s+(.*)\s+\d+ upgradable
+-dynamic.2.postprocess=
+-dynamic.2.rrd=
++static.5.name=hardware
++static.5.source=/proc/cpuinfo
++static.5.regexp=Hardware\s+: (.*)
++static.5.postprocess=
++
++static.6.name=revision
++static.6.source=/proc/cpuinfo
++static.6.regexp=Revision\s+: 0*(.*)
++static.6.postprocess=
++
++static.7.name=serial
++static.7.source=/proc/cpuinfo
++static.7.regexp=Serial\s+: (.*)
++static.7.postprocess=
++
++#dynamic.1.name=upgrade
++#dynamic.1.source=/var/lib/rpimonitor/updatestatus.txt
++#dynamic.1.regexp=(\d+ upgradable\(s\)|.*&nbsp;.*)
++#dynamic.1.postprocess=
++#dynamic.1.rrd=
++
++#dynamic.2.name=packages
++#dynamic.2.source=/var/lib/rpimonitor/updatestatus.txt
++#dynamic.2.regexp=^\s+(.*)\s+\d+ upgradable
++#dynamic.2.postprocess=
++#dynamic.2.rrd=
+ 
+ web.status.1.content.1.name=Version
+ web.status.1.content.1.icon=version.png
+ web.status.1.content.1.line.1='Processor: <b>' + data.processor + '</b>'
+-web.status.1.content.1.line.2='Distribution: <b>'+ data.distribution + '</b>'
+-web.status.1.content.1.line.3='Kernel version: <b>' + data.kernel_version + '</b>'
+-web.status.1.content.1.line.4='Firmware: <b>' + data.firmware + '</b>'
+-web.status.1.content.1.line.5='Package(s): <b>' + data.upgrade + '</b>' + ShowInfo('packages','Package(s) upgradable(s)',data.packages)
++web.status.1.content.1.line.2='Hardware: <b>' + data.hardware + '</b> revision <b>' + data.revision + '</b>'
++web.status.1.content.1.line.3='Serial number: <b>' + data.serial + '</b>'
++web.status.1.content.1.line.4='Distribution: <b>' + data.distribution + '</b>'
++web.status.1.content.1.line.5='Kernel version: <b>' + data.kernel_version + '</b>'
++web.status.1.content.1.line.6='Firmware: <b>' + data.firmware + '</b>'
++#web.status.1.content.1.line.7='Package(s): <b>' + data.upgrade + '</b>' + ShowInfo('packages','Package(s) upgradable(s)',data.packages)

@@ -1,3 +1,5 @@
-2015-03-23
-Originally sourced from the srcshelton overlay
+2015-03-25
+Full credit to srcshelton for this one
+I couldn't find the latest 2.10 in the layman overlay so I've added the ebuilds here
+pulled from https://github.com/srcshelton/gentoo-ebuilds/tree/master/www-apps/rpi-monitor/
 

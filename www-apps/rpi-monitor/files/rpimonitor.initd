@@ -6,7 +6,7 @@ PERL="$( type -pf perl )"
 NAME=rpimonitord
 PIDFILE=/var/run/$NAME.pid
 DAEMON=/usr/sbin/$NAME
-DAEMON_ARGS="-b ${PIDFILE}"
+DAEMON_ARGS="-b ${PIDFILE} ${CONFFILES:+${CONFFILES}}"
 
 depend() {
 	need net

@@ -1,0 +1,15 @@
+--- rpimonitor/rpimonitord.dist	2015-03-14 19:01:48.049612000 +0000
++++ rpimonitor/rpimonitord	2015-03-14 19:04:23.919612000 +0000
+@@ -61,8 +61,10 @@
+   $_ = abs_path($0);
+   my ($path,$file) = /(.*)\/([^\/]*)$/;
+ 
+-  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf");
+-  push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf");
++  if( scalar( @{$this->{'daemon'}->{'confFiles'}} < 2 )) {
++    push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/data.conf") if -r "/etc/rpimonitor/data.conf";
++    push(@{$this->{'daemon'}->{'confFiles'}},"/etc/rpimonitor/daemon.conf") if -r "/etc/rpimonitor/daemon.conf";
++  }
+ 
+   foreach ( @{$this->{'daemon'}->{'confFiles'}} ) {
+     #print "$_\n";

@@ -1,0 +1,82 @@
+--- rpimonitor/template/cpu.conf.dist	2015-03-14 15:01:33.369612000 +0000
++++ rpimonitor/template/cpu.conf	2015-03-14 18:03:19.359612000 +0000
+@@ -7,42 +7,48 @@
+ #  - cpu load 1, 5, 15       - yes      - yes
+ #  - cpu scaling governor    - yes      - no
+ ########################################################################
+-dynamic.1.name=cpu_frequency
+-dynamic.1.source=/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
++
++dynamic.1.name=scaling_governor
++dynamic.1.source=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+ dynamic.1.regexp=(.*)
+-dynamic.1.postprocess=$1/1000
++dynamic.1.postprocess=
+ dynamic.1.rrd=
+ 
+-dynamic.2.name=cpu_voltage
+-dynamic.2.source=vcgencmd measure_volts core
+-dynamic.2.regexp=(\d+.\d+)V
+-dynamic.2.postprocess=
+-dynamic.2.rrd=
+-
+-dynamic.3.name=load1,load5,load15
+-dynamic.3.source=/proc/loadavg
+-dynamic.3.regexp=^(\S+)\s(\S+)\s(\S+)
++dynamic.2.name=cpu_frequency
++dynamic.2.source=/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq
++dynamic.2.regexp=(.*)
++dynamic.2.postprocess=$1/1000
++dynamic.2.rrd=GAUGE
++
++dynamic.3.name=cpu_voltage
++dynamic.3.source=/opt/vc/bin/vcgencmd measure_volts core
++dynamic.3.regexp=(\d+.\d+)V
+ dynamic.3.postprocess=
+ dynamic.3.rrd=GAUGE
+ 
+-dynamic.4.name=scaling_governor
+-dynamic.4.source=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+-dynamic.4.regexp=(.*)
++dynamic.4.name=load1,load5,load15
++dynamic.4.source=/proc/loadavg
++dynamic.4.regexp=^(\S+)\s(\S+)\s(\S+)
+ dynamic.4.postprocess=
+-dynamic.4.rrd=
++dynamic.4.rrd=GAUGE
++
++web.status.1.content.3.name=CPU
++web.status.1.content.3.icon=cpu.png
++#web.status.1.content.3.line.1="Loads: <b>" + data.load1 + "</b> [1 min] - <b>" + data.load5 + "</b> [5 min] - <b>" + data.load15 + "</b> [15 min]"
++web.status.1.content.3.line.1=JustGageBar("Load", "1 min", 0, data.load1, 3, 100, 80) + " " + JustGageBar("Load", "5 min", 0, data.load5, 3, 100, 80) + " " + JustGageBar("Load", "15 min", 0, data.load15, 3, 100, 80)
++web.status.1.content.3.line.2="CPU frequency: <b>" + data.cpu_frequency + "MHz</b> Voltage: <b>" + data.cpu_voltage + "V</b>"
++web.status.1.content.3.line.3="Scaling governor: <b>" + data.scaling_governor + "</b>"
++#web.status.1.content.3.line.4=InsertHTML("/addons/top3/top3.html")
++
++web.statistics.1.content.1.name=CPU Speed
++web.statistics.1.content.1.graph.1=cpu_frequency
++web.statistics.1.content.1.ds_graph_options.cpu_frequency.label=Frequency (MHz)
++web.statistics.1.content.1.ds_graph_options.cpu_frequency.color="#FF7777"
+ 
+-web.status.1.content.1.name=CPU
+-web.status.1.content.1.icon=cpu.png
+-#web.status.1.content.1.line.1="Loads: <b>" + data.load1 + "</b> [1min] - <b>" + data.load5 + "</b> [5min] - <b>" + data.load15 + "</b> [15min]"
+-web.status.1.content.1.line.1=JustGageBar("Load", "1min", 0, data.load1, 3, 100, 80)+" "+JustGageBar("Load", "5min", 0, data.load5, 3, 100, 80)+" "+JustGageBar("Load", "15min", 0, data.load15, 3, 100, 80)
+-web.status.1.content.1.line.2="CPU frequency: <b>" + data.cpu_frequency + "MHz</b> Voltage: <b>" + data.cpu_voltage + "V</b>"
+-web.status.1.content.1.line.3="Scaling governor: <b>" + data.scaling_governor + "</b>"
+-#web.status.1.content.1.line.4=InsertHTML("/addons/top3/top3.html")
+-
+-web.statistics.1.content.1.name=CPU Loads
+-web.statistics.1.content.1.graph.1=load1
+-web.statistics.1.content.1.graph.2=load5
+-web.statistics.1.content.1.graph.3=load15
+-web.statistics.1.content.1.ds_graph_options.load1.label=Load 1min
+-web.statistics.1.content.1.ds_graph_options.load5.label=Load 5min
+-web.statistics.1.content.1.ds_graph_options.load15.label=Load 15min
++web.statistics.1.content.2.name=CPU Loads
++web.statistics.1.content.2.graph.1=load1
++web.statistics.1.content.2.graph.2=load5
++web.statistics.1.content.2.graph.3=load15
++web.statistics.1.content.2.ds_graph_options.load1.label=Load (1 min)
++web.statistics.1.content.2.ds_graph_options.load5.label=Load (5 min)
++web.statistics.1.content.2.ds_graph_options.load15.label=Load (15 min)
