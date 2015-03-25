@@ -1,2 +1,2 @@
-# Define configuration file to use
-#CONFFILE="-c /etc/rpimonitord.conf -c /etc/rpimonitord.conf.d/default.conf"
+# Define configuration files to use
+CONFFILES="-c /etc/rpimonitord.conf -c /etc/rpimonitord.conf.d/data.conf"

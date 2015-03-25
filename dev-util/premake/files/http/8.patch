@@ -1,0 +1,14 @@
+# HG changeset patch
+# User João Matos <ripzonetriton@gmail.com>
+# Date 1406727617 -3600
+# Branch http
+# Node ID ff80954e916ac77fe7bf9b764d6c724cd376bd8d
+# Parent  a6c5c8a5d1ef78e903205ec7e7b25fe6e1980636
+Fixed execute permissions of scripts.
+
+diff --git a/src/host/curl/configure b/src/host/curl/configure
+old mode 100644
+new mode 100755
+diff --git a/src/host/curl/libtool b/src/host/curl/libtool
+old mode 100644
+new mode 100755

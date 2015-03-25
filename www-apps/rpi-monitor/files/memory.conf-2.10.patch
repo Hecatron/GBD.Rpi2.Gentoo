@@ -1,0 +1,116 @@
+--- rpimonitor/template/memory.conf.dist	2015-03-14 15:13:47.409612000 +0000
++++ rpimonitor/template/memory.conf	2015-03-14 15:46:38.469612000 +0000
+@@ -6,34 +6,88 @@
+ #  - memory free              - yes      - yes
+ #  - memory available         - yes      - yes
+ ########################################################################
+-static.5.name=memory_total
+-static.5.source=/proc/meminfo
+-static.5.regexp=MemTotal:\s+(\d+)
+-static.5.postprocess=$1/1024
+-
+-dynamic.9.name=memory_free
+-dynamic.9.source=/proc/meminfo
+-dynamic.9.regexp=MemFree:\s+(\d+)
+-dynamic.9.postprocess=$1/1024
++
++#static.11.name=tmpfs_ram_total
++#static.11.source=df /mnt/ram
++#static.11.regexp=^[^\s]+\s+(\d+)
++#static.11.postprocess=$1/1024
++
++dynamic.9.name=memory_total
++dynamic.9.source=/opt/vc/bin/vcgencmd get_mem arm
++dynamic.9.regexp=^.*=(\d+)M$
++dynamic.9.postprocess=
+ dynamic.9.rrd=GAUGE
+ 
+-dynamic.15.name=memory_available
+-dynamic.15.source=/usr/bin/free -mk
+-dynamic.15.regexp=^-\/\+ buffers\/cache:\s+\d+\s+(\d+)
+-dynamic.15.postprocess=$1/1024
+-dynamic.15.rrd=GAUGE
++dynamic.10.name=memory_gpu
++dynamic.10.source=/opt/vc/bin/vcgencmd get_mem gpu
++dynamic.10.regexp=^.*=(\d+)M$
++dynamic.10.postprocess=
++dynamic.10.rrd=GAUGE
++
++dynamic.11.name=memory_free
++dynamic.11.source=/proc/meminfo
++dynamic.11.regexp=MemFree:\s+(\d+)
++dynamic.11.postprocess=$1/1024
++dynamic.11.rrd=GAUGE
++
++dynamic.12.name=memory_used
++dynamic.12.source=/proc/meminfo
++dynamic.12.regexp=MemFree:\s+(\d+)
++dynamic.12.postprocess=$this->{'dynamic'}->{'memory_total'} - ($1/1024)
++dynamic.12.rrd=GAUGE
++ 
++dynamic.13.name=memory_available
++dynamic.13.source=/usr/bin/free -mk
++dynamic.13.regexp=^-\/\+ buffers\/cache:\s+\d+\s+(\d+)
++dynamic.13.postprocess=$1/1024
++dynamic.13.rrd=GAUGE
++
++#dynamic.20.name=tmpfs_ram_used
++#dynamic.20.source=df /mnt/ram
++#dynamic.20.regexp=^[^\s]+\s+\d+\s+(\d+)
++#dynamic.20.postprocess=$1/1024
++#dynamic.20.rrd=GAUGE
+ 
+ web.status.1.content.5.name=Memory
+ web.status.1.content.5.icon=memory.png
+-web.status.1.content.5.line.1="Used: <b>" + KMG(data.memory_total-data.memory_available,'M') + "</b> (<b>" + Percent(data.memory_total-data.memory_available,data.memory_total,'M') + "</b>) Available: <b>" + KMG(data.memory_available,'M') + "</b> Total: <b>" + KMG(data.memory_total,'M') + "</b>"
+-web.status.1.content.5.line.2=ProgressBar(data.memory_total-data.memory_available,data.memory_total)
++web.status.1.content.5.line.1="Used: <b>" + KMG(data.memory_used,'M') + "</b> (<b>" + Percent(data.memory_used,data.memory_total,'M') + "</b>) Free: <b>" + KMG(data.memory_free,'M') + "</b> Available: <b>" + KMG(data.memory_available,'M') + "</b> Total: <b>" + KMG(data.memory_total,'M') + "</b>"
++web.status.1.content.5.line.2="GPU: <b>" + KMG(data.memory_gpu,'M') + "</b>"
++web.status.1.content.5.line.3=ProgressBar(data.memory_used,data.memory_total)
++
++#web.status.1.content.8.name=RAM fs
++#web.status.1.content.8.icon=memory.png
++#web.status.1.content.8.line.1="Used: <b>" + KMG(data.tmpfs_ram_used,'M') + "</b> (<b>" + Percent(data.tmpfs_ram_used,data.tmpfs_ram_total,'M') + "</b>) Free: <b>" + KMG(data.tmpfs_ram_total-data.tmpfs_ram_used,'M') + "</b> Total: <b>" + KMG(data.tmpfs_ram_total,'M') + "</b>"
++#web.status.1.content.8.line.2=ProgressBar(data.tmpfs_ram_used,data.tmpfs_ram_total)
++
++#web.statistics.1.content.6.name=tmpfs - RAM
++#web.statistics.1.content.6.graph.1=tmpfs_ram_total
++#web.statistics.1.content.6.graph.2=tmpfs_ram_used
++#web.statistics.1.content.6.ds_graph_options.tmpfs_ram_total.label=Size of /mnt/ram (MB)
++#web.statistics.1.content.6.ds_graph_options.tmpfs_ram_total.color="#FF7777"
++#web.statistics.1.content.6.ds_graph_options.tmpfs_ram_used.label=Used on /mnt/ram (MB)
++#web.statistics.1.content.6.ds_graph_options.tmpfs_ram_used.lines={ fill: true }
++#web.statistics.1.content.6.ds_graph_options.tmpfs_ram_used.color="#7777FF"
+ 
+-web.statistics.1.content.6.name=Memory
+-web.statistics.1.content.6.graph.1=memory_total
+-web.statistics.1.content.6.graph.2=memory_free
+-web.statistics.1.content.6.graph.3=memory_available
+-web.statistics.1.content.6.ds_graph_options.memory_total.label=Total Memory(MB)
+-web.statistics.1.content.6.ds_graph_options.memory_free.label=Free Memory (MB)
+-web.statistics.1.content.6.ds_graph_options.memory_free.color="#7777FF"
+-web.statistics.1.content.6.ds_graph_options.memory_available.label=Available Memory (MB)
+-web.statistics.1.content.6.ds_graph_options.memory_available.color="#77FF77"
++web.statistics.1.content.7.name=Memory
++web.statistics.1.content.7.graph.1=memory_available
++web.statistics.1.content.7.graph.2=memory_free
++web.statistics.1.content.7.graph.3=memory_used
++web.statistics.1.content.7.graph.4=memory_total
++web.statistics.1.content.7.graph.5=memory_gpu
++#web.statistics.1.content.7.graph.6=tmpfs_ram_total
++#web.statistics.1.content.7.graph.7=tmpfs_ram_used
++web.statistics.1.content.7.ds_graph_options.memory_available.label=Available Memory (MB)
++web.statistics.1.content.7.ds_graph_options.memory_available.color="#FF7700"
++web.statistics.1.content.7.ds_graph_options.memory_free.label=Free Memory (MB)
++web.statistics.1.content.7.ds_graph_options.memory_free.color="#77FF77"
++web.statistics.1.content.7.ds_graph_options.memory_used.label=Used Memory (MB)
++web.statistics.1.content.7.ds_graph_options.memory_used.color="#FF7777"
++web.statistics.1.content.7.ds_graph_options.memory_total.label=Total Memory (MB)
++web.statistics.1.content.7.ds_graph_options.memory_total.color="#7777FF"
++web.statistics.1.content.7.ds_graph_options.memory_gpu.label=GPU Memory (MB)
++web.statistics.1.content.7.ds_graph_options.memory_gpu.lines={ fill: true }
++web.statistics.1.content.7.ds_graph_options.memory_gpu.color="#FFFF77"
++#web.statistics.1.content.7.ds_graph_options.tmpfs_ram_total.label=Size of /mnt/ram (MB)
++#web.statistics.1.content.7.ds_graph_options.tmpfs_ram_total.color="#77FFFF"
++#web.statistics.1.content.7.ds_graph_options.tmpfs_ram_used.label=Used on /mnt/ram (MB)
++#web.statistics.1.content.7.ds_graph_options.tmpfs_ram_used.color="#FF77FF"
