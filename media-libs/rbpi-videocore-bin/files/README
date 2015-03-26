@@ -1,0 +1,6 @@
+
+There was a recent ebuild here
+http://gitweb.gentoo.org/dev/xmw.git/commit/?id=79c6c41ee96bee725e475571fee0db248f943ad6
+
+This version instead downloads the files directly from github
+
