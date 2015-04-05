@@ -26,6 +26,12 @@ This way I can recompile everything with hard float support, and get the newer v
 I'd imagine at some stage there will be a debian hardfloat version for the RPI2, or a more official gentoo release setup for it.
 I'm just using this as a stop gap untill that's released
 
+All RPI CPU's fall under the family of **BCM2708** this is sort of the family / chip group name.
+But the more specific model name of the CPU is:
+
+* RPI1 = BCM2835
+* RPI2 = BCM2836
+
 Install:
 
   * [1.1 Gentoo - Initial Stage3 Setup](docs/1.1 Gentoo - Initial Stage3 Setup.md)
@@ -33,7 +39,7 @@ Install:
   * [1.3 Gentoo - Setup of Bootloader](docs/1.3 Gentoo - Setup of Bootloader.md)
   * [1.4 Gentoo - Post Boot Setup](docs/1.4 Gentoo - Post Boot Setup.md)
   * [1.5 Gentoo - Additional Packages](docs/1.5 Gentoo - Additional Packages.md)
-  * [1.6 Custom Overlays](docs/1.6 Custom Overlays.md)
+  * [1.6 Gentoo - Desktop Managers](docs/1.6 Gentoo - Desktop Managers.md)
 
 Other:
 
@@ -42,3 +48,4 @@ Other:
   * [2.3 Cross Compiling](docs/2.3 Cross Compiling.md)
   * [2.4 Overclocking](docs/2.4 Overclocking.md)
   * [2.5 Custom Kernel](docs/2.5 Custom Kernel.md)
+  * [2.6 Custom Overlays](docs/2.6 Custom Overlays.md)
