@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>1.1 Gentoo - Initial Stage3 Setup &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="1.1 Gentoo - Initial Stage3 Setup">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">1.1 Gentoo - Initial Stage3 Setup</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="gentoo---initial-stage3-setup">1.1 Gentoo - Initial Stage3 Setup</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>The below setup is done with a USB Hard disk in mind, the Rpi / Rpi2 has to boot to an SD Card initially <br />
+So I’m using an initial noobs RPI2 install on a 8Gb SD Card as the initial starting point <br />
+I’ve created a boot partition below for experimenting with switching across to a different kernel mid-boot</p>
+
+<h2 id="disk-layout">Disk Layout</h2>
+
+<h3 id="setup-partition-table">Setup Partition Table</h3>
+
+<p>Using fdisk within raspian and the USB disk plugged in, first I setup 3 partitions</p>
+
+<pre><code>/dev/sda1 1Gb   - boot - type "c"
+/deb/sda2 10Gb  - swap - type "82"
+/dev/sda3 489Gb - root - type "83"
+</code></pre>
+
+<h3 id="setup-the-filesystem">Setup the Filesystem</h3>
+
+<p>To create the file systems on the new partitions</p>
+
+<pre><code>mkfs.vfat -F 16 /dev/sda1
+mkfs.ext4 /dev/sda3
+mkswap /dev/sda2
+</code></pre>
+
+<h2 id="setting-up-the-root-filesystem">Setting up the Root Filesystem</h2>
+
+<h3 id="setting-up-stage-3">Setting up Stage 3</h3>
+
+<p>To mount the new root partition</p>
+
+<pre><code>mkdir /mnt/gentoo
+mount -t auto /dev/sda3 /mnt/gentoo
+</code></pre>
+
+<p>We need to download the latest stage 3 from gentoo <a href="http://distfiles.gentoo.org/releases/arm/autobuilds/current-stage3-armv7a_hardfp/">Link</a> <br />
+This is using the ARM7 hard float version which should be better suited to the RPI2</p>
+
+<pre><code>cd /mnt/gentoo
+wget http://distfiles.gentoo.org/releases/arm/autobuilds/current-stage3-armv7a_hardfp/stage3-armv7a_hardfp-20141023.tar.bz2
+tar xvjpf stage3-armv7a_hardfp-20141023.tar.bz2
+rm stage3-armv7a_hardfp-20141023.tar.bz2
+</code></pre>
+
+<h3 id="chroot">Chroot</h3>
+
+<p>To chroot into the filesystem</p>
+
+<pre><code>cd /
+mount -t proc proc /mnt/gentoo/proc
+mount --rbind /dev /mnt/gentoo/dev
+mount --rbind /sys /mnt/gentoo/sys
+cp -L /etc/resolv.conf /mnt/gentoo/etc/ 
+chroot /mnt/gentoo /bin/bash
+source /etc/profile
+</code></pre>
+
+<h3 id="download-the-portage-tree">Download the portage tree</h3>
+
+<p>Next we need to download the portage tree <br />
+At this stage we should now be chroot’d into the portage directory /mnt/gentoo <br />
+The prompt under ssh should look different at this point</p>
+
+<p>Let’s download the portage tree / do an emerge sync</p>
+
+<pre><code>mkdir /usr/portage
+emerge-webrsync
+</code></pre>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>

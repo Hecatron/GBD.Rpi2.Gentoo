@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>GBD.Rpi2.Gentoo &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="GBD Raspberry Pi 2 Gentoo Overlay">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">GBD.Rpi2.Gentoo</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="gbdrpi2gentoo">GBD.Rpi2.Gentoo</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>This is a custom Gentoo portage overlay for my own experimentation with putting gentoo onto a Raspberry Pi 2.
+Feel free to use the notes I’ve put together for installation, but there’s no support included.
+This is intended more as a command reference / list of things to do for the setup.
+I’d recomend reading more of the official gentoo documentation if you’ve never installed gentoo before.</p>
+
+<p>The information here is a little rough, some of it is a duplication of the official gentoo docs.
+But it should be enough to get you going with the RPi2 and gentoo.</p>
+
+<p>In my case I’m using a 500Gb USB Hard disk, with raspian installed onto the SD Card as a starting point.
+I’m using a hard disk here for the install because of the swap space and size of the install (and to keep raspian intact).
+Also gentoo is likley to thrash the disk while compiling apps and code, which isn’t something you generally want to happen
+on an SD Card.</p>
+
+<h2 id="initial-installation">Initial Installation</h2>
+
+<ul>
+  <li><a href="docs/1.1 Gentoo - Initial Stage3 Setup.html">1.1 Gentoo - Initial Stage3 Setup</a></li>
+  <li><a href="docs/1.2 Gentoo - Setup of Chroot.html">1.2 Gentoo - Setup of Chroot</a></li>
+  <li><a href="docs/1.3 Gentoo - Setup of Bootloader.html">1.3 Gentoo - Setup of Bootloader</a></li>
+  <li><a href="docs/1.4 Gentoo - Post Boot Setup.html">1.4 Gentoo - Post Boot Setup</a></li>
+  <li><a href="docs/1.5 Gentoo - Additional Packages.html">1.5 Gentoo - Additional Packages</a></li>
+  <li><a href="docs/1.6 Gentoo - Desktop Managers.html">1.6 Gentoo - Desktop Managers</a></li>
+</ul>
+
+<h2 id="post-install-setup">Post Install Setup</h2>
+
+<ul>
+  <li><a href="docs/2.1 Boot Process.html">2.1 Boot Process</a></li>
+  <li><a href="docs/2.2 Video Output.html">2.2 Video Output</a></li>
+  <li><a href="docs/2.3 Cross Compiling.html">2.3 Cross Compiling</a></li>
+  <li><a href="docs/2.4 Overclocking.html">2.4 Overclocking</a></li>
+  <li><a href="docs/2.5 Custom Kernel.html">2.5 Custom Kernel</a></li>
+  <li><a href="docs/2.6 Custom Overlays.html">2.6 Custom Overlays</a></li>
+</ul>
+
+<h2 id="cpu-info">CPU Info</h2>
+
+<p>All RPI CPU’s fall under the family of <strong>BCM2708</strong> this is sort of the family / chip group name.
+But the more specific model name of the CPU is:</p>
+
+<ul>
+  <li>RPI1 = BCM2835</li>
+  <li>RPI2 = BCM2836</li>
+</ul>
+
+<p>The original Rpi only had support for ARM6 but the RPI 2 now has support for ARM7 along with hard float calculations for additional performance.
+With raspian I found the build tools to be a bit older than I liked, so I decided to have a go with gentoo.
+This way I can recompile everything with hard float support, and get the newer versions of the build tools I’m after</p>
+
+<ul>
+  <li><a href="https://blogs.oracle.com/jtc/entry/is_it_armhf_or_armel">https://blogs.oracle.com/jtc/entry/is_it_armhf_or_armel</a></li>
+</ul>
+
+<p>I’d imagine at some stage there will be a debian hardfloat version for the RPI2, or a more official gentoo release setup for it.
+I’m just using this as a stop gap untill that’s released</p>
+
+<h2 id="original-links--sources-of-information">Original Links / Sources of Information</h2>
+
+<ul>
+  <li><a href="https://plus.google.com/+WolfgangApolinarski/posts/dNTqe6sVW87">https://plus.google.com/+WolfgangApolinarski/posts/dNTqe6sVW87</a></li>
+  <li><a href="http://www.raspberrypi.org/forums/viewtopic.php?f=54&amp;t=98517">http://www.raspberrypi.org/forums/viewtopic.php?f=54&amp;t=98517</a></li>
+  <li><a href="https://www.gentoo.org/doc/en/gentoo-x86-quickinstall.xml">https://www.gentoo.org/doc/en/gentoo-x86-quickinstall.xml</a></li>
+  <li><a href="http://wiki.gentoo.org/wiki/Raspberry_Pi">http://wiki.gentoo.org/wiki/Raspberry_Pi</a></li>
+  <li><a href="https://wiki.gentoo.org/wiki/Raspberry_Pi_Quick_Install_Guide">https://wiki.gentoo.org/wiki/Raspberry_Pi_Quick_Install_Guide</a></li>
+</ul>
+
+<h2 id="todo">TODO</h2>
+
+<ul>
+  <li>Update the ebuilds for latest kde plasma etc</li>
+  <li>Re-try this out on a Rpi2 with a fresh build and a 2.5” USB Hard Disk</li>
+</ul>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>
