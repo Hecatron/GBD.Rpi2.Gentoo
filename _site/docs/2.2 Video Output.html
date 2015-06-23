@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>2.2 Video Output &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="2.2 Video Output">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">2.2 Video Output</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="video-output">2.2 Video Output</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>I’ve put some info here on selecting the default video resolution for an rpi on bootup</p>
+
+<p>Based on this link:</p>
+
+<ul>
+  <li><a href="http://weblogs.asp.net/bleroy/getting-your-raspberry-pi-to-output-the-right-resolution">http://weblogs.asp.net/bleroy/getting-your-raspberry-pi-to-output-the-right-resolution</a></li>
+</ul>
+
+<h3 id="get-edid-info">Get EDID Info</h3>
+
+<p>First to get the edid information</p>
+
+<pre><code>tvservice -d edid
+</code></pre>
+
+<p>This should result in a file being outputed called edid with information pulled from the monitor <br />
+The next command will parse that file and show us a list of supported resolutions</p>
+
+<pre><code>edidparser edid
+</code></pre>
+
+<h3 id="change-the-boot-resolution">Change the boot resolution</h3>
+
+<p>Next based on the output from before we’re now going to change the default output resolution when the rpi boots</p>
+
+<pre><code>nano /boot/config.txt
+</code></pre>
+
+<p>The two options to watch out for are</p>
+
+<pre><code>hdmi_group=1
+hdmi_mode=16
+</code></pre>
+
+<p>Note:</p>
+
+<ul>
+  <li>CEA = hdmi_group=1</li>
+  <li>DMT = hdmi_group=2</li>
+</ul>
+
+<p>The mode should equal the mode from the line output in edidparser</p>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>

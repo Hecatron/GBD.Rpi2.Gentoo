@@ -1,0 +1,16 @@
+title:            GBD.Rpi2.Gentoo
+description:      "GBD Raspberry Pi 2 Gentoo Overlay"
+logo:             site_logo.png
+disqus_shortname: gbd_web_project_template
+
+# Change baseurl to the leading path after the domain
+# see http://jekyllrb.com/docs/github-pages/
+# to override Start Jekyll with: jekyll serve --baseurl ''
+baseurl: /GBD.Rpi2.Gentoo
+
+# GitHub Url for the project this page refereces
+projecturl: https://github.com/grbd/GBD.Rpi2.Gentoo
+
+# Include .nojekyll so that the final rendered page isn't re-rendered by github's jekyll which doesn't have plugins
+include: [".nojekyll"]
+exclude: ["Deploy.bat"]

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>1.2 Gentoo - Setup of chroot &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="1.2 Gentoo - Setup of chroot">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">1.2 Gentoo - Setup of chroot</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="gentoo---setup-of-chroot">1.2 Gentoo - Setup of chroot</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>Next we’re going to set things up within the chroot <br />
+From this point onwards it’s assumed that your already inside the chroot within /mnt/gentoo</p>
+
+<h2 id="general-configuration">General Configuration</h2>
+
+<h3 id="setup-the-timezone">Setup the Timezone</h3>
+
+<p>Lets setup our local timezone <br />
+I’m using British time here</p>
+
+<pre><code>ls /usr/share/zoneinfo
+cp /usr/share/zoneinfo/Europe/London /etc/localtime
+echo "Europe/London" &gt; /etc/timezone
+date
+</code></pre>
+
+<h3 id="setup-the-gentoo-profile">Setup the Gentoo profile</h3>
+
+<p>To list all gentoo profiles available <br />
+I’m already using the default one which is default/linux/arm/13.0/armv7a</p>
+
+<pre><code>eselect profile list
+</code></pre>
+
+<h3 id="setup-the-hostname">Setup the Hostname</h3>
+
+<p>Lets setup the hostname</p>
+
+<pre><code>nano -w /etc/conf.d/hostname
+&lt;change the host name in the config and save&gt;
+</code></pre>
+
+<h3 id="setting-up-fstab">Setting up fstab</h3>
+
+<p>To setup fstab (make sure you in the chroot) <br />
+Because I’m using a USB disk here</p>
+
+<pre><code>nano -w /etc/fstab
+
+/dev/mmcblk0p5          /boot           vfat            defaults        0 2
+/dev/sda3               /               ext4            noatime         0 1
+/dev/sda2               none            swap            sw              0 0
+</code></pre>
+
+<h3 id="set-the-root-password">Set the root password</h3>
+
+<p>Within the chroot we want to setup the root password</p>
+
+<pre><code>passwd
+&lt;enter a new password for root&gt;
+</code></pre>
+
+<h3 id="setup-keymaps">Setup keymaps</h3>
+
+<p>In my case I want a british keymap so we edit /etc/conf.d/keymaps</p>
+
+<pre><code>ls /usr/share/keymaps/i386/qwerty
+nano -w /etc/conf.d/keymaps
+
+&lt;set keymap="uk"&gt;
+</code></pre>
+
+<h3 id="inittab-setup">Inittab Setup</h3>
+
+<p>Edit the /etc/inittab file in the gentoo install <br />
+comment out the line under Serial Consoles</p>
+
+<pre><code>nano -w /etc/inittab
+
+#s0:12345:respawn:/sbin/agetty -L 9600 ttyS0 vt100
+</code></pre>
+
+<h3 id="setting-up-makeconf">Setting up make.conf</h3>
+
+<p>For gcc 4.8 we need to change the CFLAGS setting within /etc/portage/make.conf</p>
+
+<ul>
+  <li><a href="http://www.gentoo-wiki.info/CFLAGS_matrix">Gentoo CFLAGS matrix</a></li>
+  <li><a href="https://wiki.gentoo.org/wiki/GCC_optimization">GCC Optimisations</a></li>
+  <li><a href="http://www.raspberrypi.org/forums/viewtopic.php?f=66&amp;t=98897">CFLAGS thread</a></li>
+</ul>
+
+<p>There may be better cflag settings for the rpi2, but I think these are the best ones so far</p>
+
+<pre><code>nano -w /etc/portage/make.conf
+
+CFLAGS="-O2 -pipe -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard"
+CXXFLAGS="${CFLAGS}"
+</code></pre>
+
+<h3 id="setup-sys-logger-and-cron-deamon">Setup sys logger and cron deamon</h3>
+
+<p>Lets install some packages and set them to run at boot</p>
+
+<pre><code>emerge syslog-ng
+emerge vixie-cron
+emerge logrotate
+rc-update add syslog-ng default
+rc-update add vixie-cron default
+</code></pre>
+
+<h2 id="setup-networking">Setup networking</h2>
+
+<h3 id="install-networking-packages">Install Networking Packages</h3>
+
+<p>Since we’re going to want dhcp / wireless support later on</p>
+
+<pre><code>emerge dhcpcd
+emerge wireless-tools
+emerge wpa_supplicant
+emerge linux-firmware
+</code></pre>
+
+<ul>
+  <li><a href="http://wiki.gentoo.org/wiki/Handbook:X86/Networking/Wireless">Gentoo Docs - Networking / Wireless</a></li>
+</ul>
+
+<h3 id="wpa-supplicant-config">Wpa Supplicant Config</h3>
+
+<p>If your using wpa for wireless (most people do) we first need to tell the setup to use wpa_supplicant in preference</p>
+
+<pre><code>nano -w /etc/conf.d/net
+
+# Prefer wpa_supplicant over wireless-tools
+modules="wpa_supplicant"
+</code></pre>
+
+<p>Now for the wpa_supplicant.conf file</p>
+
+<pre><code>cp /usr/share/doc/wpa_supplicant-2.2-r1/wpa_supplicant.conf.bz2 /etc/wpa_supplicant
+cd /etc/wpa_supplicant/
+bzip2 -d wpa_supplicant.conf.bz2
+nano -w wpa_supplicant.conf
+</code></pre>
+
+<p>Comment out all the network sections at the bottom except for one, and use that to connect <br />
+see this <a href="https://kerneldriver.wordpress.com/2012/10/21/configuring-wpa2-using-wpa_supplicant-on-the-raspberry-pi/">Link</a> for an example setup</p>
+
+<h3 id="wlan-symbolic-link">WLan Symbolic Link</h3>
+
+<p>Lets create a symbolic link for the network</p>
+
+<pre><code>cd /etc/init.d
+ln -s net.lo net.wlan0
+rc-update add net.wlan0 default
+</code></pre>
+
+<h3 id="other-commands">Other Commands</h3>
+
+<p>some rebooting and fiddling may be required to get this to work later on <br />
+Once your booted directly into gentoo try the following if your having problems</p>
+
+<pre><code>iwconfig
+ifconfig wlan0 up
+</code></pre>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>

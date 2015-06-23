@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>1.6 Gentoo - Desktop Managers &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="1.6 Gentoo - Desktop Managers">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">1.6 Gentoo - Desktop Managers</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="gentoo---desktop-managers">1.6 Gentoo - Desktop Managers</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>I’ve bundled together all the notes on setting up Desktop Environments here</p>
+
+<h2 id="lxde">LXDE</h2>
+
+<p>The default desktop is lxde for the rpi</p>
+
+<pre><code>emerge lxde-meta
+rc-update add dbus default
+</code></pre>
+
+<ul>
+  <li><a href="https://wiki.gentoo.org/wiki/LXDE">https://wiki.gentoo.org/wiki/LXDE</a></li>
+</ul>
+
+<h2 id="gnome">Gnome</h2>
+
+<p>I’ve put some notes here on installing Gnome onto the Rpi2,
+again I’m not a big fan of gtk personally but it’s used by mono
+and I just wanted to try it out</p>
+
+<p>As a first step I’d recomend installing systemd
+this doesn’t mean you have to boot using it, but it is a depend for Gnome</p>
+
+<p>Next I had to make the following use changes to /etc/portage/package.use</p>
+
+<pre><code>dev-libs/openssl -bindist
+net-misc/openssh -bindist
+</code></pre>
+
+<p>I didn’t want to disable bindist globally
+(bindist means use binary packages where you can instead of compiling source).
+But one of the Gnome depends, requires openssl be installed with -bindist.
+Also openssh needs to have the same bindist setting as openssl</p>
+
+<p>If you try to emerge gnome for the first time you’ll probably get a list of use flags
+and package unmasks it’s asking for as part of the install</p>
+
+<p>Any other use flags it asked for I just enabled globally using ufed.
+For unmasking I just used –autounmask-write and etc-update to unmask the Gnome packages that were needed.
+Also I’d recomend installing from within a tmux session if doing this over ssh so you can leave it unattended.
+and to make sure your existing world packages are already up to date first, just to avoid complications</p>
+
+<pre><code>emerge gnome
+</code></pre>
+
+<p>Note it takes a little while to start up so it’s best to be patient.</p>
+
+<h2 id="kde">KDE</h2>
+
+<p>This one might be a bit heavy for the rpi,
+but I wanted to experiment with different desktops, and I wanted the Qt libs</p>
+
+<ul>
+  <li><a href="https://wiki.gentoo.org/wiki/KDE/Plasma_5_upgrade">https://wiki.gentoo.org/wiki/KDE/Plasma_5_upgrade</a></li>
+  <li><a href="https://wiki.gentoo.org/wiki/KDE/Overlay">https://wiki.gentoo.org/wiki/KDE/Overlay</a></li>
+  <li><a href="https://wiki.gentoo.org/wiki/KDE">https://wiki.gentoo.org/wiki/KDE</a></li>
+</ul>
+
+<p>Since I want to use the latest plasma 5.2 lets add in the kde overlay</p>
+
+<pre><code>layman -f -a kde
+</code></pre>
+
+<p>Next unmask the kde plasma ebuilds</p>
+
+<pre><code>mkdir -p /etc/portage/package.unmask
+cd /etc/portage/package.unmask
+ln -s /var/lib/layman/kde/Documentation/package.unmask/kde-plasma-5.2
+</code></pre>
+
+<p>Next time to change some keywords <br />
+Note I already had a file setup under /etc/portage/package.accept_keywords
+so I had to relocate this to cd /etc/portage/package.accept_keywords/autounmask.keywords</p>
+
+<pre><code>mkdir -p /etc/portage/package.accept_keywords
+cd /etc/portage/package.accept_keywords
+ln -s /var/lib/layman/kde/Documentation/package.keywords/kde-frameworks-5.7.keywords
+ln -s /var/lib/layman/kde/Documentation/package.keywords/kde-plasma-5.2.keywords 
+</code></pre>
+
+<p>Lets disable the upower use flag for sddm if systemd is enabled</p>
+
+<pre><code>nano -w /etc/portage/package.use
+x11-misc/sddm -upower
+</code></pre>
+
+<p>Note when unmasking package names try to make sure the version number is 5.2.9999 instead of 9999
+for packages under the group kde-plasma.
+For kde 4 the kde-meta package name would be used, but for plasma we use instead</p>
+
+<pre><code>emerge --ask @kde-plasma
+</code></pre>
+
+<p>I’ve also found there seems to be some issues with finding the git repo for kde-plasma/libmm-qt
+I couldn’t find the repo on the kde site so it’s possible that it’s no longer needed</p>
+
+<p>Another thing to watch out for is that I had to unmask the egl use flag
+And enable egl for clutter to get it to build without conflicts</p>
+
+<pre><code>mkdir -p /etc/portage/profile
+echo "-egl" &gt;&gt; /etc/portage/profile/use.mask
+</code></pre>
+
+<p>After installing everything, I noticed that a single file was missing for startx
+/etc/X11/Sessions/KDE-5</p>
+
+<p>Let’s create a new file</p>
+
+<pre><code>nano -w /etc/X11/Sessions/KDE-5
+</code></pre>
+
+<p>Add 2 lines of text to it</p>
+
+<pre><code>#!/bin/sh
+exec "/usr/bin/startkde"
+</code></pre>
+
+<p>make it executable</p>
+
+<pre><code>chmod +x /etc/X11/Sessions/KDE-5
+</code></pre>
+
+<p>At this point we should now be able to select it via XSESSION=KDE-5 (see below)</p>
+
+<h2 id="maynard">MayNard</h2>
+
+<p>Looking at this <a href="http://www.raspberrypi.org/preview-the-upcoming-maynard-desktop/">Link</a> <br />
+In order to get an accelerated desktop ideally we need to use wayland
+However the default desktop the rpi uses LXDE doesn’t currently support wayland</p>
+
+<p>One option is kde or gnome, but they’re a bit heavyweight for the Pi <br />
+Raspian has been working on something called Maynard as an alternative for use with Wayland</p>
+
+<p>It looks as if there’s an overlay setup for it already under leio</p>
+
+<ul>
+  <li>
+    <p><a href="http://gpo.zugaina.org/x11-wm/maynard">http://gpo.zugaina.org/x11-wm/maynard</a></p>
+
+    <p>layman -a leio</p>
+  </li>
+</ul>
+
+<p>Lets install</p>
+
+<pre><code>emerge wayland
+emerge maynard
+</code></pre>
+
+<p>In some cases the gles or gles2 use flags are required when wayland is enabled.
+Since gles (opengl es) is a subset of opengl designed for embedded systems
+I’d recomend only enabling gles / gles2 only on the packages that need it enabled to compile
+Otherwise you may get conflicts later on with packages within kde plasma for example</p>
+
+<p>TODO</p>
+
+<ul>
+  <li>Missing entry under /etc/X11/Sessions/</li>
+  <li>Maynard requires a background from kde-wallpapers, which does not seem</li>
+  <li>to be even provided anymore. Set the BACKGROUND environment variable</li>
+  <li>to point to a background image that exists, in order to be able to</li>
+  <li>launch Maynard for now.</li>
+</ul>
+
+<h2 id="misc">Misc</h2>
+
+<h3 id="default-window-manager">Default Window Manager</h3>
+
+<p>In order to choose the default X window manager we need to edit a file.
+For example to set to lxde</p>
+
+<pre><code>nano -w /etc/env.d/90xsession
+
+XSESSION=lxde
+
+env-update &amp;&amp; source /etc/profile
+</code></pre>
+
+<p>To get a list of the available values we can put there:</p>
+
+<pre><code>cd /etc/X11/Sessions/
+ls -l
+</code></pre>
+
+<p>Then to start up X</p>
+
+<pre><code>startx
+</code></pre>
+
+<p>It’s important to run env-update and source /etc/profile after changing the value in the file
+In order for the default value to be used to change</p>
+
+<h3 id="xrdp">XRDP</h3>
+
+<p>XRdp is usefull for when we want to connect to the Desktop via rdp from the outside</p>
+
+<pre><code>make sure server use flag is enabled
+
+emerge --autounmask-write xrdp
+etc-update
+emerge xrdp
+</code></pre>
+
+<p>TODO Check setup with Wayland etc</p>
+
+<h3 id="d-acceleration">3D Acceleration</h3>
+
+<p>TODO</p>
+
+<p>enable egl / gles / gles1 / gles2 / gles3
+disable opengl global</p>
+
+<p>TODO make sure to remerge these:</p>
+
+<pre><code>net-libs/webkit-gtk
+kde-frameworks/plasma
+kde-plasma/kwin
+</code></pre>
+
+<p>3D OpenGL ES</p>
+
+<ul>
+  <li>libEGL.so</li>
+  <li>libGLESv1_CM.so</li>
+  <li>libGLESv2.so</li>
+</ul>
+
+<p>Look into these:</p>
+
+<ul>
+  <li><a href="http://blog.oklahome.net/2014/09/what-ive-learned-about-mmal-raspberry.html">MMAL Info</a></li>
+  <li><a href="http://www.phoronix.com/scan.php?page=news_item&amp;px=MTE1MjE">openwf / libwfc</a></li>
+  <li><a href="http://elinux.org/RPI_vcgencmd_usage">vcgencmd / libvcsm.so</a></li>
+  <li>openmax api / libopenmaxil.so <a href="https://github.com/tjormola/rpi-openmax-demos/">Link1</a> <a href="http://www.raspberrypi.org/forums/viewtopic.php?t=56964&amp;p=477273">Link2</a></li>
+  <li>openvg / libOpenVG.so</li>
+</ul>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>

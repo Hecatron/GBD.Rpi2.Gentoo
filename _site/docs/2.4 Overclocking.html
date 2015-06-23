@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>2.4 Overclocking &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="2.4 Overclocking">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">2.4 Overclocking</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="overclocking">2.4 Overclocking</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>Some notes I’ve taken from other sites on overclocking the RPI</p>
+
+<p>TODO the below is probably for the RPI1 check the settings for the RPI2</p>
+
+<h2 id="frequency-select">Frequency Select</h2>
+
+<pre><code>nano -w /boot/config.txt 
+
+#"None" "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
+#"Modest" "800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt"
+#"Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
+#"High" "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
+#"Turbo" "1000MHz ARM, 500MHz core, 500MHz SDRAM, 6 overvolt"
+
+
+/boot/config.txt
+
+arm_freq=900
+core_freq=333
+sdram_freq=450
+over_voltage=2
+</code></pre>
+
+<h2 id="force-turbo">Force Turbo</h2>
+
+<p>The force turbo option turns off the dynamic clocks and runs the Raspberry Pi constantly
+at the highest arm_freq. Edit the /boot/config.txt, add force_turbo=1 then reboot the Raspberry Pi for changes to take effect.</p>
+
+<pre><code>nano -w /boot/config.txt
+
+force_turbo=1
+</code></pre>
+
+<ul>
+  <li><a href="http://elinux.org/RPi_config.txt#force_turbo_mode">http://elinux.org/RPi_config.txt#force_turbo_mode</a></li>
+</ul>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>1.3 Gentoo - Setup of Bootloader &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="1.3 Gentoo - Setup of Bootloader">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">1.3 Gentoo - Setup of Bootloader</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="gentoo---setup-of-bootloader">1.3 Gentoo - Setup of Bootloader</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>I’ve put together some info on the boot process <a href="2.1 Boot Process.html">here</a> <br />
+For now this part of the doc will just focus on re-using the kernel included with raspian for the rpi2.
+Just to get us booted into gentoo</p>
+
+<h2 id="mulitple-boot-options">Mulitple Boot Options</h2>
+
+<p>TODO is there any way to have multiple boot options via Noobs? /media/SETTINGS/</p>
+
+<ul>
+  <li><a href="http://monsterjam.org/blog/blog.pl/20140627103441">http://monsterjam.org/blog/blog.pl/20140627103441</a></li>
+</ul>
+
+<h2 id="gentoo-setup">Gentoo Setup</h2>
+
+<h3 id="exit-chroot">Exit chroot</h3>
+
+<p>In this case since we’re already booting into a Raspian install <br />
+we should already have a kernel and modules setup under /boot (/dev/mmcblk0p5) on the sd card</p>
+
+<p>First exit the chroot</p>
+
+<pre><code>exit
+</code></pre>
+
+<h3 id="copy-kernel-modules">Copy Kernel Modules</h3>
+
+<p>Next we’re going to copy the kernel modules from the raspian setup across to the gentoo root</p>
+
+<pre><code>cp -a /lib/modules /mnt/gentoo/lib/
+</code></pre>
+
+<h3 id="edit-cmdlinetxt">Edit cmdline.txt</h3>
+
+<p>Time to setup the /boot/cmdline.txt to tell the kernel to boot the gentoo system instead of raspian <br />
+First lets make a backup of the existing file</p>
+
+<pre><code>cd /boot
+cp cmdline.txt cmdline.txt.raspian
+</code></pre>
+
+<p>Next we’re going to edit the file to change the root option to select a different root partition</p>
+
+<p>Original:</p>
+
+<pre><code>dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p6 rootfstype=ext4 elevator=deadline rootwait
+</code></pre>
+
+<p>New:</p>
+
+<pre><code>dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/sda3 rootfstype=ext4 elevator=noop rootwait
+</code></pre>
+
+<p>Finally make a copy of it</p>
+
+<pre><code>cp cmdline.txt cmdline.txt.gentoo
+</code></pre>
+
+<p>Now whenever you want to switch between gentoo and raspian just copy one of those files over the top of cmdline.txt</p>
+
+<h3 id="reboot--unmount-into-gentoo">Reboot / Unmount into gentoo</h3>
+
+<p>Now we should be ready for booting into gentoo <br />
+Use the below commands for unmounting the gentoo filesystem / rebooting into gentoo</p>
+
+<pre><code>umount -l /mnt/gentoo/dev{/shm,/pts,}
+umount -l /mnt/gentoo{/proc,/boot,/sys,}
+reboot
+</code></pre>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>

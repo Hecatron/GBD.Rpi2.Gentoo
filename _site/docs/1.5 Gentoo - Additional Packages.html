@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>1.5 Gentoo - Additional Packages &#8211; GBD.Rpi2.Gentoo</title>
+<meta name="description" content="1.5 Gentoo - Additional Packages">
+
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+
+</head>
+<body>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/grbd/GBD.Rpi2.Gentoo">View on GitHub</a>
+
+          <h1 id="project_title">1.5 Gentoo - Additional Packages</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/grbd/GBD.Rpi2.Gentoo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+
+<div id="main_content_wrap" class="outer">
+    <section id="main_content" class="inner">
+        <h1 id="gentoo---additional-packages">1.5 Gentoo - Additional Packages</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>I’ve put a list here of some additional packages I’ve tried installing</p>
+
+<h2 id="layman-overlay">Layman Overlay</h2>
+
+<h3 id="initial-setup">Initial Setup</h3>
+
+<p>Next we’re going to setup overlays, via layman.
+It’s best to check the git use flag is enabled as a starting point.
+Next if layman isn’t already installed</p>
+
+<pre><code>emerge layman
+</code></pre>
+
+<p>Next we need to make sure the overlays are picked up by portage</p>
+
+<pre><code>echo "source /var/lib/layman/make.conf" &gt;&gt; /etc/portage/make.conf
+</code></pre>
+
+<h3 id="grbd-github-overlay">Grbd Github Overlay</h3>
+
+<p>To add the custom overlay I’ve setup</p>
+
+<pre><code>cd /etc/layman/overlays/
+wget https://raw.githubusercontent.com/grbd/GBD.Rpi2.Gentoo/master/GBD.Rpi2.Gentoo.xml
+layman -a GBD.Rpi2.Gentoo
+</code></pre>
+
+<h3 id="quick-command-reference">Quick Command Reference</h3>
+
+<p>To get the latest version of any overlays that have been setup
+(similar to emerge sync)</p>
+
+<pre><code>layman -S
+</code></pre>
+
+<p>To list available overlays</p>
+
+<pre><code>layman --list
+</code></pre>
+
+<p>To add a new overlay</p>
+
+<pre><code>layman -a &lt;overlayname&gt;
+</code></pre>
+
+<p>To remove an overlay</p>
+
+<pre><code>layman -d &lt;overlayname&gt;
+</code></pre>
+
+<h2 id="rpi-specific">Rpi Specific</h2>
+
+<h3 id="rpi-userland-tools">RPi Userland Tools</h3>
+
+<p>Next to install the RPi userland tools</p>
+
+<pre><code>emerge --autounmask-write =media-libs/raspberrypi-userland-0_pre20150325
+etc-update
+emerge raspberrypi-userland
+</code></pre>
+
+<h3 id="rpi-videocoreiv">RPI VideoCoreIV</h3>
+
+<p>There’s also a bunch of libs and binary files as part of the firmware package that is usefull.
+This includes edidparser for parsing edid files, and VideoCoreIV for accelerated graphics / accessing the GPU</p>
+
+<pre><code>emerge --autounmask-write =media-libs/rbpi-videocore-bin-0_pre20150325
+etc-update
+emerge =media-libs/rbpi-videocore-bin-0_pre20150325
+</code></pre>
+
+<p>It’s possible to select a different opengl implementation with eselect</p>
+
+<pre><code>eselect opengl list
+eselect opengl set
+</code></pre>
+
+<p>I found that the default xorg implementation needed to be selected in order to get cairo to compile. <br /></p>
+
+<p>TODO the files for VideoCore are installed under /opt/vc/, is there something we need to do for the ebuild
+to make eselect aware of it’s presence?</p>
+
+<h3 id="rpi-monitor">RPi Monitor</h3>
+
+<p>TODO currently getting a 400 bad request error
+There seems to be problems with the paths in the config file under /etc/
+and I think permissions for the web server</p>
+
+<pre><code>emerge rpi-monitor
+/etc/init.d/rpimonitor start
+</code></pre>
+
+<p>Go to:</p>
+
+<pre><code>http://RPI_Ip_Address:8888/
+</code></pre>
+
+<h2 id="misc">Misc</h2>
+
+<h3 id="text-to-speech">Text to Speech</h3>
+
+<p>Lets try text to speech (make sure oss / alsa use flags are enabled)</p>
+
+<pre><code>emerge flite
+</code></pre>
+
+<p>Simple test</p>
+
+<pre><code>flite -t "Hello World"
+</code></pre>
+
+<p>To list available voices</p>
+
+<pre><code>flite -lv
+</code></pre>
+
+<p>Lets try out a new voice</p>
+
+<pre><code>flite -voice slt -t "Hello World"
+</code></pre>
+
+<p>TODO are these hts voices?</p>
+
+<h3 id="mono">Mono</h3>
+
+<p>To run some .Net apps lets install mono</p>
+
+<pre><code>emerge --autounmask-write mono
+etc-update
+emerge mono
+</code></pre>
+
+<h3 id="watchdog">Watchdog</h3>
+
+<p>TODO look into <a href="http://pi.gadgetoid.com/article/who-watches-the-watcher">http://pi.gadgetoid.com/article/who-watches-the-watcher</a></p>
+
+<p>TODO MonoGame Library / .Net Cross compatibility for a 3D library</p>
+
+<h3 id="systemd">Systemd</h3>
+
+<p>Most of the systemd info is already covered here <a href="https://wiki.gentoo.org/wiki/Systemd">Link</a> <br />
+This is just info specific to the rpi setup</p>
+
+<p>with the default linux config for the rpi2 I got a warning about CONFIG_DMIID not being set
+but so far I’ve ignored this since it’s probably just something related to the arm</p>
+
+<ul>
+  <li>
+    <p>First step</p>
+
+    <p>Make sure mtab is a symbolic link
+  ln -sf /proc/self/mounts /etc/mtab</p>
+  </li>
+  <li>Enable the systemd use flag, disable the consolekit use flag (I use ufed)</li>
+  <li>
+    <p>Update World</p>
+
+    <p>emerge -avDN @world</p>
+  </li>
+</ul>
+
+<p>Note we don’t have to use systemd for the boot init process, it’s only required as a depend for Gnome.
+To use it in place of openrc (the default gentoo init system) we just need to modify the command line parameters passed to the kernel.</p>
+
+<p>TODO list kernel command line parameters / test</p>
+
+<h3 id="hardware-random-number-generator">Hardware Random Number Generator</h3>
+
+<p>The RPi should have a hardware random number generator (also true for rpi2) <br />
+First lets install the tools / load the kernel module into memory</p>
+
+<pre><code>emerge --autounmask-write rng-utils
+etc-update
+emerge rng-utils
+modprobe bcm2708-rng
+</code></pre>
+
+<p>Next let’s alter a config settings</p>
+
+<pre><code>nano -w /etc/conf.d/rngd
+
+RNGD_OPTS="-o /dev/random -r /dev/hwrng"
+</code></pre>
+
+<p>This initial result should be slow for the random number output</p>
+
+<pre><code>cat /dev/random
+</code></pre>
+
+<p>Lets restart rngd</p>
+
+<pre><code>/etc/init.d/rngd restart
+</code></pre>
+
+<p>This should now be a lot faster</p>
+
+<pre><code>cat /dev/random
+</code></pre>
+
+<p>To add the rngd service to boot</p>
+
+<pre><code>rc-update add rngd boot
+</code></pre>
+
+    </section>
+</div>
+
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Testproject maintained by <a href="https://github.com/grbd">Garlicbread</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a> via <a href="http://jekyllrb.com/">Jekyll</a></p>
+      </footer>
+    </div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/GBD.Rpi2.Gentoo/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/GBD.Rpi2.Gentoo/assets/js/main.js"></script>
+
+<script type='text/javascript'>console.log("Garlicbread Project GitHub Pages Theme Version 1.0");</script>
+<script type='text/javascript'>console.log("http://grbd.github.io/GBD.ProjectTemplate");</script>
+  
+</body>
+</html>
