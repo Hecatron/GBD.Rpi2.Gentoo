@@ -70,8 +70,8 @@ mount -t auto /dev/sda3 /mnt/gentoo
 This is using the ARM7 hard float version which should be better suited to the RPI2</p>
 
 <pre><code>cd /mnt/gentoo
-wget http://distfiles.gentoo.org/releases/arm/autobuilds/current-stage3-armv7a_hardfp/stage3-armv7a_hardfp-20141023.tar.bz2
-tar xvjpf stage3-armv7a_hardfp-20141023.tar.bz2
+wget http://distfiles.gentoo.org/releases/arm/autobuilds/current-stage3-armv7a_hardfp/stage3-armv7a_hardfp-20150607.tar.bz2
+tar xvjpf stage3-armv7a_hardfp-20150607.tar.bz2
 rm stage3-armv7a_hardfp-20141023.tar.bz2
 </code></pre>
 
@@ -83,7 +83,7 @@ rm stage3-armv7a_hardfp-20141023.tar.bz2
 mount -t proc proc /mnt/gentoo/proc
 mount --rbind /dev /mnt/gentoo/dev
 mount --rbind /sys /mnt/gentoo/sys
-cp -L /etc/resolv.conf /mnt/gentoo/etc/ 
+cp -L /etc/resolv.conf /mnt/gentoo/etc/
 chroot /mnt/gentoo /bin/bash
 source /etc/profile
 </code></pre>
