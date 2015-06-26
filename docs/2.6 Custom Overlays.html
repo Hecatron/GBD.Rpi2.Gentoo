@@ -8,6 +8,7 @@
 
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 <link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/pygments-default.css">
 
 </head>
 <body>
@@ -28,71 +29,59 @@
 
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1 id="custom-overlays">2.6 Custom Overlays</h1>
+        <h1>2.6 Custom Overlays</h1>
 
-<h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 
-<p>I’ve put some info here on creating your own custom overlays</p>
+<p>I&#39;ve put some info here on creating your own custom overlays</p>
 
-<h2 id="overlay-setup">Overlay Setup</h2>
+<h2>Overlay Setup</h2>
 
-<h3 id="userpriv-feature">Userpriv feature</h3>
+<h3>Userpriv feature</h3>
 
 <p>One of the security features enabled by default within portage / emerge, is to always run commands
-such as emerge or ebuild as the portage user. If your working on an overlay and it’s in a place portage
-can’t access, this can cause a problem.</p>
+such as emerge or ebuild as the portage user. If your working on an overlay and it&#39;s in a place portage
+can&#39;t access, this can cause a problem.</p>
 
 <p>One work around to this (although this makes the system a little less secure) is to just turn off the
 userpriv feature.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/portage/make.conf
 
-<pre><code>nano -w /etc/portage/make.conf
-
-FEATURES="-userpriv"
-</code></pre>
-
+FEATURES=&quot;-userpriv&quot;
+</code></pre></div>
 <p>To see which features are already enabled</p>
-
-<pre><code>emerge --info | grep ^FEATURES=
-</code></pre>
-
-<h3 id="custom-overlays-1">Custom Overlays</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --info | grep ^FEATURES=
+</code></pre></div>
+<h3>Custom Overlays</h3>
 
 <p>If you want to setup your own overlay on github, one useful tool is</p>
-
-<pre><code>layman-overlay-maker
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">layman-overlay-maker
+</code></pre></div>
 <p>To generate the xml for layman.
-However you’ll need layman 2.2.0 or later to use it</p>
-
-<pre><code>emerge --autounmask-write =app-portage/layman-2.3.0
-</code></pre>
-
-<p>I’d recommend going back to the default layman version after using layman-overlay-maker.
+However you&#39;ll need layman 2.2.0 or later to use it</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --autounmask-write =app-portage/layman-2.3.0
+</code></pre></div>
+<p>I&#39;d recommend going back to the default layman version after using layman-overlay-maker.
 I had problems with 2.3.0</p>
 
-<h2 id="ebuild-setup">Ebuild Setup</h2>
+<h2>Ebuild Setup</h2>
 
-<h3 id="creating-the-digest">Creating the Digest</h3>
+<h3>Creating the Digest</h3>
 
 <p>The first step is to create a digest / Manifest file for the ebuild, this just acts as a verification
 when downloading the source for the emerge that the correct source files have been downloaded</p>
-
-<pre><code>ebuild &lt;filename&gt;.ebuild digest
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">ebuild &lt;filename&gt;.ebuild digest
+</code></pre></div>
 <p>The end result should be changes or the addition of a Manifest file
 also the sources for the ebuild will be downloaded into /usr/portage/distfiles/
 This needs to be done whenever the ebuild file is changed, before it can be used for emerge</p>
 
-<h3 id="unpack-the-sources">Unpack the Sources</h3>
+<h3>Unpack the Sources</h3>
 
 <p>The next stage is to unpack / uncompress the sources</p>
-
-<pre><code>ebuild &lt;filename&gt;.ebuild unpack
-</code></pre>
-
-<h3 id="todo">TODO</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">ebuild &lt;filename&gt;.ebuild unpack
+</code></pre></div>
+<h3>TODO</h3>
 
     </section>
 </div>

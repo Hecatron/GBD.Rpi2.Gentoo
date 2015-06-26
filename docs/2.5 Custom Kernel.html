@@ -8,6 +8,7 @@
 
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 <link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/pygments-default.css">
 
 </head>
 <body>
@@ -28,167 +29,133 @@
 
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1 id="custom-kernel">2.5 Custom Kernel</h1>
+        <h1>2.5 Custom Kernel</h1>
 
-<h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 
-<p>For the default install of gentoo so far I’ve used the kernel image that comes with raspian.
-It turns out there’s already an ebuild for the rpi kernel sources under <strong>sys-kernel/raspberrypi-sources</strong></p>
+<p>For the default install of gentoo so far I&#39;ve used the kernel image that comes with raspian.
+It turns out there&#39;s already an ebuild for the rpi kernel sources under <strong>sys-kernel/raspberrypi-sources</strong></p>
 
 <p>With the rpi2 there are 2 main differences from the default kernel sources. <br />
 Based on this <a href="http://www.raspberrypi.org/forums/viewtopic.php?f=66&amp;t=101353">Link</a></p>
 
 <ul>
-  <li>Instead of bcmrpi_defconfig we use <strong>bcm2709_defconfig</strong></li>
-  <li>The bootloader instead of looking for kernel.img, looks for <strong>kernel7.img</strong> instead</li>
+<li>Instead of bcmrpi<em>defconfig we use **bcm2709</em>defconfig**</li>
+<li>The bootloader instead of looking for kernel.img, looks for <strong>kernel7.img</strong> instead</li>
 </ul>
 
 <p>Typically with raspian the current kenel version as of writing is 3.18.7-v7+ <br />
 To get the current kernel version number</p>
-
-<pre><code>uname -r
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">uname -r
+</code></pre></div>
 <p>Kernel sources link:</p>
 
 <ul>
-  <li><a href="https://github.com/raspberrypi/linux/">https://github.com/raspberrypi/linux/</a></li>
+<li><a href="https://github.com/raspberrypi/linux/">https://github.com/raspberrypi/linux/</a></li>
 </ul>
 
-<h2 id="emerging-the-sources">Emerging the sources</h2>
+<h2>Emerging the sources</h2>
 
-<p>I’ve setup my own overlay under GBD.Rpi2.Gentoo with an ebuild called <strong>sys-kernel/grbdrpi2-sources</strong>.
-It’s exactly the same as sys-kernel/raspberrypi-sources except it has a higher version number
+<p>I&#39;ve setup my own overlay under GBD.Rpi2.Gentoo with an ebuild called <strong>sys-kernel/grbdrpi2-sources</strong>.
+It&#39;s exactly the same as sys-kernel/raspberrypi-sources except it has a higher version number
 and is set for bcm2709_defconfig</p>
 
-<p>Any ebuild ending in 9999 will get the latest version from github, 3.19.1 is one I’ve set to a particular commit</p>
-
-<pre><code>emerge --autounmask-write sys-kernel/grbdrpi2-sources-3.18.1
+<p>Any ebuild ending in 9999 will get the latest version from github, 3.19.1 is one I&#39;ve set to a particular commit</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --autounmask-write sys-kernel/grbdrpi2-sources-3.18.1
 etc-update
 emerge =sys-kernel/grbdrpi2-sources-3.18.1
-</code></pre>
-
-<p>It’ll probably take a while to download since it downloads the whole git tree</p>
+</code></pre></div>
+<p>It&#39;ll probably take a while to download since it downloads the whole git tree</p>
 
 <p>We also need the following tools</p>
-
-<pre><code>emerge --autounmask-write sys-boot/raspberrypi-mkimage
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --autounmask-write sys-boot/raspberrypi-mkimage
 etc-update
 emerge sys-boot/raspberrypi-mkimage
-</code></pre>
+</code></pre></div>
+<h2>Building the Sources</h2>
 
-<h2 id="building-the-sources">Building the Sources</h2>
-
-<p>At this stage after the emerge you’ll probably find it’s installed the sources under
+<p>At this stage after the emerge you&#39;ll probably find it&#39;s installed the sources under
 /usr/src/linux-version, with a symbolic link pointing from /usr/src/linux to that directory</p>
 
 <p>When you compile certain apps via emerge, they use the files under the path /usr/src/linux
 to act as a basis for the linux sources during compilation (such as additional drivers)</p>
 
 <p>selecting a different kernel that the link needs to point to can be done via eselect kernel</p>
-
-<pre><code>eselect kernel list
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">eselect kernel list
+</code></pre></div>
 <p>To clean the sources</p>
-
-<pre><code>make distclean
-</code></pre>
-
-<h3 id="configuring-the-kernel">Configuring the Kernel</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">make distclean
+</code></pre></div>
+<h3>Configuring the Kernel</h3>
 
 <p>The default configuration for the rpi2 can be setup by doing the following:</p>
-
-<pre><code>cd /usr/src/linux
+<div class="highlight"><pre><code class="language-text" data-lang="text">cd /usr/src/linux
 make bcm2709_defconfig
-</code></pre>
-
+</code></pre></div>
 <p>This will output a file <strong>.config</strong> which is the config that will be used for building.
 If you want to pull back the config that currently running at present in memory</p>
-
-<pre><code>zcat /proc/config.gz &gt;/usr/src/linux/config.raspian
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">zcat /proc/config.gz &gt;/usr/src/linux/config.raspian
+</code></pre></div>
 <p>To alter config options with a menu</p>
-
-<pre><code>make menuconfig
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">make menuconfig
+</code></pre></div>
 <p>The following command can be used to convert a config from an older kernel to the current kernel</p>
-
-<pre><code>make oldconfig
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">make oldconfig
+</code></pre></div>
 <p>To compare the old config vs the new</p>
-
-<pre><code>diff -Naur config.raspian .config &gt;diff1.t
-</code></pre>
-
-<p>Some thngs I’ve noticed</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">diff -Naur config.raspian .config &gt;diff1.t
+</code></pre></div>
+<p>Some thngs I&#39;ve noticed</p>
 
 <ul>
-  <li>Auditing seems to be enabled on raspian, but disabled for the latest rpi2 kernel default config
+<li>Auditing seems to be enabled on raspian, but disabled for the latest rpi2 kernel default config
 that suggests we may get some noticable speed increases by compiling our own kernel</li>
 </ul>
 
-<h3 id="building-the-kernel">Building the kernel</h3>
+<h3>Building the kernel</h3>
 
 <p>To build the kernel and modules using all quad cores</p>
-
-<pre><code>make -j5
-</code></pre>
-
-<h3 id="installing-the-kernel">Installing the kernel</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">make -j5
+</code></pre></div>
+<h3>Installing the kernel</h3>
 
 <p>First to install the kernel modules. This should copy the kernel modules
 From /usr/src/linux into /lib/modules/kernel-version</p>
-
-<pre><code>make modules_install1
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">make modules_install1
+</code></pre></div>
 <p>Next to install the kernel image</p>
-
-<pre><code>cd /usr/src/linux
+<div class="highlight"><pre><code class="language-text" data-lang="text">cd /usr/src/linux
 cp arch/arm/boot/Image /boot/kernel7-gentoo.img
-</code></pre>
-
+</code></pre></div>
 <p>Note with older bootloaders a script called imagetool-uncompressed.py used to be needed to copy / alter the kernel <br />
 However with more recent bootloaders this is no longer required, in fact I found when using Noobs it can actually prevent the kernel from booting altogether.</p>
 
 <p>Lets make a backup of the old raspian kernel</p>
-
-<pre><code>cd /boot/
+<div class="highlight"><pre><code class="language-text" data-lang="text">cd /boot/
 cp kernel7.img kernel7-raspian.img
-</code></pre>
-
+</code></pre></div>
 <p>Finally lets add some new conifg options to cmdline.txt</p>
-
-<pre><code>nano -w /boot/cmdline.txt
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /boot/cmdline.txt
 
 # Original
 #kernel=kernel7-raspian.img
 
 # New
 kernel=kernel7-gentoo.img
-</code></pre>
-
-<p>In the event this doesn’t work you can hold down shift at boot, click e to edit configs.
+</code></pre></div>
+<p>In the event this doesn&#39;t work you can hold down shift at boot, click e to edit configs.
 Then comment out the new kernel / uncomment the old kernel file</p>
 
 <p>Finally a reboot</p>
-
-<pre><code>reboot
-</code></pre>
-
-<h3 id="todo">TODO</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">reboot
+</code></pre></div>
+<h3>TODO</h3>
 
 <ul>
-  <li>TODO try setting up a 2nd boot partition on the SD card that can be selected by Noobs for gentoo</li>
-  <li>
-    <p>Look at recompiling Noobs, there’s a pull request for usb disk support under <a href="https://github.com/raspberrypi/noobs/pulls">https://github.com/raspberrypi/noobs/pulls</a></p>
-  </li>
-  <li>TODO Look into DeviceTree’s</li>
-  <li><a href="http://www.raspberrypi.org/documentation/configuration/device-tree.md">http://www.raspberrypi.org/documentation/configuration/device-tree.md</a></li>
+<li>TODO try setting up a 2nd boot partition on the SD card that can be selected by Noobs for gentoo</li>
+<li><p>Look at recompiling Noobs, there&#39;s a pull request for usb disk support under <a href="https://github.com/raspberrypi/noobs/pulls">https://github.com/raspberrypi/noobs/pulls</a></p></li>
+<li><p>TODO Look into DeviceTree&#39;s</p></li>
+<li><p><a href="http://www.raspberrypi.org/documentation/configuration/device-tree.md">http://www.raspberrypi.org/documentation/configuration/device-tree.md</a></p></li>
 </ul>
 
     </section>
