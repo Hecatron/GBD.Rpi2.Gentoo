@@ -8,6 +8,7 @@
 
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 <link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/pygments-default.css">
 
 </head>
 <body>
@@ -28,87 +29,85 @@
 
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1 id="boot-process">2.1 Boot Process</h1>
+        <h1>2.1 Boot Process</h1>
 
-<h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 
-<p>I’ve tried to list here a generalised overview of the boot process for the rpi / rpi2 <br />
-Typically most rpi’s use Noobs which makes this a little more complicated</p>
+<p>I&#39;ve tried to list here a generalised overview of the boot process for the rpi / rpi2 <br />
+Typically most rpi&#39;s use Noobs which makes this a little more complicated</p>
 
 <p>TODO go through these</p>
 
 <p>cmdline.txt options:</p>
 
 <ul>
-  <li><a href="http://www.raspberrypi.org/documentation/configuration/config-txt.md">http://www.raspberrypi.org/documentation/configuration/config-txt.md</a></li>
+<li><a href="http://www.raspberrypi.org/documentation/configuration/config-txt.md">http://www.raspberrypi.org/documentation/configuration/config-txt.md</a></li>
 </ul>
 
-<h2 id="firmware-versions">Firmware Versions</h2>
+<h2>Firmware Versions</h2>
 
 <p>The differences in firmware versions:</p>
 
 <ul>
-  <li>fixup_x.dat, start_x.elf enable potentially unstable/not-fully-tested/hacky functionality - extra video codecs</li>
-  <li>fixup_cd.dat, start_cd.elf These are used when GPU memory is set to 16 MB, which disables some GPU features</li>
-  <li><a href="http://www.raspberrypi.org/forums/viewtopic.php?p=198420#p198420">http://www.raspberrypi.org/forums/viewtopic.php?p=198420#p198420</a></li>
+<li>fixup<em>x.dat, start</em>x.elf enable potentially unstable/not-fully-tested/hacky functionality - extra video codecs</li>
+<li>fixup<em>cd.dat, start</em>cd.elf These are used when GPU memory is set to 16 MB, which disables some GPU features</li>
+<li><a href="http://www.raspberrypi.org/forums/viewtopic.php?p=198420#p198420">http://www.raspberrypi.org/forums/viewtopic.php?p=198420#p198420</a></li>
 </ul>
 
-<h2 id="boot-process-1">Boot Process</h2>
+<h2>Boot Process</h2>
 
-<h3 id="without-noobs-boot-process">Without Noobs Boot Process</h3>
+<h3>Without Noobs Boot Process</h3>
 
 <p>First the way the boot works without Noobs <br />
 The general boot process for the Rpi is:</p>
 
 <ol>
-  <li>A fixed block of code within the Soc is run on the GPU as the first stage bootloader this is fixed and inbuilt to the chip</li>
-  <li>The second stage bootloader is loaded from <strong>bootcode.bin</strong> on the first partition typically mounted on /boot/</li>
-  <li>The GPU Firmware <strong>start.elf / fixup.dat</strong> is loaded (fixup.date is used for the SDRAM partition)</li>
-  <li><strong>config.txt</strong> is parsed as a sort of list of bios / bootloader options</li>
-  <li>The user code / linux <strong>kernel.img</strong> is then loaded and run</li>
-  <li><strong>cmdline.txt</strong> is parsed by the kernel for a list of options</li>
+<li>A fixed block of code within the Soc is run on the GPU as the first stage bootloader this is fixed and inbuilt to the chip</li>
+<li>The second stage bootloader is loaded from <strong>bootcode.bin</strong> on the first partition typically mounted on /boot/</li>
+<li>The GPU Firmware <strong>start.elf / fixup.dat</strong> is loaded (fixup.date is used for the SDRAM partition)</li>
+<li><strong>config.txt</strong> is parsed as a sort of list of bios / bootloader options</li>
+<li>The user code / linux <strong>kernel.img</strong> is then loaded and run</li>
+<li><strong>cmdline.txt</strong> is parsed by the kernel for a list of options</li>
 </ol>
 
 <p>Links:</p>
 
 <ul>
-  <li><a href="http://elinux.org/RPi_Software">http://elinux.org/RPi_Software</a></li>
-  <li><a href="https://github.com/raspberrypi/noobs/wiki/Standalone-partitioning-explained">https://github.com/raspberrypi/noobs/wiki/Standalone-partitioning-explained</a></li>
+<li><a href="http://elinux.org/RPi_Software">http://elinux.org/RPi_Software</a></li>
+<li><a href="https://github.com/raspberrypi/noobs/wiki/Standalone-partitioning-explained">https://github.com/raspberrypi/noobs/wiki/Standalone-partitioning-explained</a></li>
 </ul>
 
-<h3 id="with-noobs-boot-process">With Noobs Boot Process</h3>
+<h3>With Noobs Boot Process</h3>
 
-<p>Most RPI’s when they are installed come with noobs on the sd card by default, this makes things a little more complicated</p>
+<p>Most RPI&#39;s when they are installed come with noobs on the sd card by default, this makes things a little more complicated</p>
 
 <p>Links:</p>
 
 <ul>
-  <li><a href="https://github.com/raspberrypi/noobs/wiki/NOOBS-partitioning-explained">https://github.com/raspberrypi/noobs/wiki/NOOBS-partitioning-explained</a></li>
-  <li><a href="https://github.com/raspberrypi/firmware/tree/master/boot">https://github.com/raspberrypi/firmware/tree/master/boot</a></li>
+<li><a href="https://github.com/raspberrypi/noobs/wiki/NOOBS-partitioning-explained">https://github.com/raspberrypi/noobs/wiki/NOOBS-partitioning-explained</a></li>
+<li><a href="https://github.com/raspberrypi/firmware/tree/master/boot">https://github.com/raspberrypi/firmware/tree/master/boot</a></li>
 </ul>
 
 <p>The typical partition layout is</p>
 
 <ul>
-  <li>/dev/mmcblk0p0 - represents the entire sd card</li>
-  <li>/dev/mmcblk0p1 - 1st Stage Boot partition, used by Noobs for the initial boot</li>
-  <li>/dev/mmcblk0p2 - Extended Partition - contains logical partitions mmcblk0p5 / mmcblk0p6</li>
-  <li>/dev/mmcblk0p3 - Settings used for Noobs (mounted /media/SETTINGS/)</li>
-  <li>
-    <p>/dev/mmcblk0p4 - Not Used</p>
-  </li>
-  <li>/dev/mmcblk0p5 - 2nd Stage Boot partition, used by the OS to store the kernel / boot files (mounted /boot/)</li>
-  <li>/dev/mmcblk0p6 - Main OS root partition where the operating system is installed (mounted /)</li>
+<li>/dev/mmcblk0p0 - represents the entire sd card</li>
+<li>/dev/mmcblk0p1 - 1st Stage Boot partition, used by Noobs for the initial boot</li>
+<li>/dev/mmcblk0p2 - Extended Partition - contains logical partitions mmcblk0p5 / mmcblk0p6</li>
+<li>/dev/mmcblk0p3 - Settings used for Noobs (mounted /media/SETTINGS/)</li>
+<li><p>/dev/mmcblk0p4 - Not Used</p></li>
+<li><p>/dev/mmcblk0p5 - 2nd Stage Boot partition, used by the OS to store the kernel / boot files (mounted /boot/)</p></li>
+<li><p>/dev/mmcblk0p6 - Main OS root partition where the operating system is installed (mounted /)</p></li>
 </ul>
 
-<p>The general idea is Noobs never changes it’s primary boot partition /dev/mmcblk0p1 <br />
+<p>The general idea is Noobs never changes it&#39;s primary boot partition /dev/mmcblk0p1 <br />
 This way the device should always be bootable, this partition is not mounted by default <br />
 The settings for Noobs as to which kernel / etc to boot is stored within /dev/mmcblk0p3</p>
 
 <p>If the shift key is held down during boot then Noobs will interupt the boot process <br />
 and allow for the editing of the config.txt / cmdline.txt to edit the boot options</p>
 
-<p>When Noobs decides to boot an OS it does so via the OS’s /boot partition (/dev/mmcblk0p5) <br />
+<p>When Noobs decides to boot an OS it does so via the OS&#39;s /boot partition (/dev/mmcblk0p5) <br />
 it does a soft-reboot and loads the start.elf from that boot partition to start the boot process</p>
 
     </section>

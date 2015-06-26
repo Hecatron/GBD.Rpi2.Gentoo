@@ -8,6 +8,7 @@
 
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 <link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/pygments-default.css">
 
 </head>
 <body>
@@ -28,23 +29,22 @@
 
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1 id="overclocking">2.4 Overclocking</h1>
+        <h1>2.4 Overclocking</h1>
 
-<h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 
-<p>Some notes I’ve taken from other sites on overclocking the RPI</p>
+<p>Some notes I&#39;ve taken from other sites on overclocking the RPI</p>
 
 <p>TODO the below is probably for the RPI1 check the settings for the RPI2</p>
 
-<h2 id="frequency-select">Frequency Select</h2>
+<h2>Frequency Select</h2>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /boot/config.txt 
 
-<pre><code>nano -w /boot/config.txt 
-
-#"None" "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
-#"Modest" "800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt"
-#"Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
-#"High" "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
-#"Turbo" "1000MHz ARM, 500MHz core, 500MHz SDRAM, 6 overvolt"
+#&quot;None&quot; &quot;700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt&quot;
+#&quot;Modest&quot; &quot;800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt&quot;
+#&quot;Medium&quot; &quot;900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt&quot;
+#&quot;High&quot; &quot;950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt&quot;
+#&quot;Turbo&quot; &quot;1000MHz ARM, 500MHz core, 500MHz SDRAM, 6 overvolt&quot;
 
 
 /boot/config.txt
@@ -53,20 +53,17 @@ arm_freq=900
 core_freq=333
 sdram_freq=450
 over_voltage=2
-</code></pre>
-
-<h2 id="force-turbo">Force Turbo</h2>
+</code></pre></div>
+<h2>Force Turbo</h2>
 
 <p>The force turbo option turns off the dynamic clocks and runs the Raspberry Pi constantly
-at the highest arm_freq. Edit the /boot/config.txt, add force_turbo=1 then reboot the Raspberry Pi for changes to take effect.</p>
-
-<pre><code>nano -w /boot/config.txt
+at the highest arm<em>freq. Edit the /boot/config.txt, add force</em>turbo=1 then reboot the Raspberry Pi for changes to take effect.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /boot/config.txt
 
 force_turbo=1
-</code></pre>
-
+</code></pre></div>
 <ul>
-  <li><a href="http://elinux.org/RPi_config.txt#force_turbo_mode">http://elinux.org/RPi_config.txt#force_turbo_mode</a></li>
+<li><a href="http://elinux.org/RPi_config.txt#force_turbo_mode">http://elinux.org/RPi<em>config.txt#force</em>turbo_mode</a></li>
 </ul>
 
     </section>

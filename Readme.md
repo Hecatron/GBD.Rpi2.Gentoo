@@ -24,7 +24,7 @@ on an SD Card.
 ## Initial Installation
 
   * [1.1 Gentoo - Initial Stage3 Setup](docs/1.1 Gentoo - Initial Stage3 Setup.md)
-  * [1.2 Gentoo - Setup of Chroot](docs/1.2 Gentoo - Setup of chroot.md)
+  * [1.2 Gentoo - Setup of chroot](docs/1.2 Gentoo - Setup of chroot.md)
   * [1.3 Gentoo - Setup of Bootloader](docs/1.3 Gentoo - Setup of Bootloader.md)
   * [1.4 Gentoo - Post Boot Setup](docs/1.4 Gentoo - Post Boot Setup.md)
   * [1.5 Gentoo - Additional Packages](docs/1.5 Gentoo - Additional Packages.md)

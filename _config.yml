@@ -11,6 +11,13 @@ baseurl: /GBD.Rpi2.Gentoo
 # GitHub Url for the project this page refereces
 projecturl: https://github.com/grbd/GBD.Rpi2.Gentoo
 
+# Use the redcarpet renderer for code blocks and tables, also pygments for code blocks
+markdown:    redcarpet
+highlighter: pygments
+
+redcarpet:
+  extensions: [tables,autolink]
+
 # Include .nojekyll so that the final rendered page isn't re-rendered by github's jekyll which doesn't have plugins
 include: [".nojekyll"]
-exclude: ["Deploy.bat"]
+exclude: ["deploy.bat","build.bat","build-watch.bat","todo.md"]

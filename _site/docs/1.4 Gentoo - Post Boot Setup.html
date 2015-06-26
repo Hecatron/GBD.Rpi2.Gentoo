@@ -8,6 +8,7 @@
 
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 <link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/pygments-default.css">
 
 </head>
 <body>
@@ -28,331 +29,270 @@
 
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1 id="gentoo---post-boot-setup">1.4 Gentoo - Post Boot Setup</h1>
+        <h1>1.4 Gentoo - Post Boot Setup</h1>
 
-<h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 
 <p>At this point we should now be booted into the new gentoo system <br />
-I’ve included some final steps here I’ve done for the setup</p>
+I&#39;ve included some final steps here I&#39;ve done for the setup</p>
 
-<h2 id="config-changes">Config Changes</h2>
+<h2>Config Changes</h2>
 
-<h3 id="setting-the-clock">Setting the Clock</h3>
+<h3>Setting the Clock</h3>
 
 <p>The first thing to do is to setup the clock, since this can mess up installs with emerge. 
 If the clock is set to something in the past like 1970</p>
-
-<pre><code>date
-date 050204212013
-date MMDDhhmmYYYY
-</code></pre>
-
-<h3 id="tmux">Tmux</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">date
+date --set=&quot;26 Jun 2015 16:10:00&quot;
+</code></pre></div>
+<h3>Tmux</h3>
 
 <p>If you want to leave installs / updated unattended over ssh, installing tmux might be an idea</p>
-
-<pre><code>emerge tmux
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge tmux
+</code></pre></div>
 <ul>
-  <li>New Session <strong>tmux new -s session_name</strong></li>
-  <li>To detach a session Ctrl B / D</li>
-  <li>To attach a session <strong>tmux attach</strong> or <strong>tmux attach -t session_name</strong></li>
-  <li>To list session <strong>tmux list</strong></li>
-  <li><a href="https://robots.thoughtbot.com/a-tmux-crash-course">Additional TMux Info</a></li>
+<li>New Session <strong>tmux new -s session_name</strong></li>
+<li>To detach a session Ctrl B, then D</li>
+<li>To attach a session <strong>tmux attach</strong> or <strong>tmux attach -t session_name</strong></li>
+<li>To list session <strong>tmux list</strong></li>
+<li><a href="https://robots.thoughtbot.com/a-tmux-crash-course">Additional TMux Info</a></li>
 </ul>
 
-<h3 id="new-user">New user</h3>
+<h3>New user</h3>
 
 <p>Lets setup a new non root user</p>
-
-<pre><code>useradd -g users -G lp,wheel,audio,cdrom,portage,cron -m newuser
+<div class="highlight"><pre><code class="language-text" data-lang="text">useradd -g users -G lp,wheel,audio,cdrom,portage,cron -m newuser
 passwd newuser
-</code></pre>
+</code></pre></div>
+<h3>Mirrorselect / Makeopts</h3>
 
-<h3 id="mirrorselect--makeopts">Mirrorselect / Makeopts</h3>
+<p>Next we&#39;re going to select a mirror for portage, and setup the make options <br />
+The RPi2 is a quad core so I&#39;m using -j5 for the make options to use all the cores</p>
 
-<p>Next we’re going to select a mirror for portage, and setup the make options <br />
-The RPi2 is a quad core so I’m using -j5 for the make options to use all the cores</p>
+<p>First lets install mirrorselect</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge mirrorselect
+</code></pre></div>
+<p>Next the sync setting has been moved out of make.conf to /etc/portage/repos.conf/gentoo.conf so lets set that up</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">mkdir /etc/portage/repos.conf
+cp /usr/share/portage/config/repos.conf /etc/portage/repos.conf/gentoo.conf
+</code></pre></div>
+<p>The gentoo mirrors setting is still stored within /etc/portage/make.conf,
+this statement should update it with the fastest mirrors it can find</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">mirrorselect -s3 -b10 -D
+</code></pre></div>
+<p>Lets set the make options for -j5 to use all 4 cores during compile</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">echo &#39;MAKEOPTS=&quot;-j5&quot;&#39; &gt;&gt; /etc/portage/make.conf
+</code></pre></div>
+<h3>Setup useflags tool</h3>
 
-<pre><code>emerge mirrorselect
-mirrorselect -i -o &gt;&gt; /etc/portage/make.conf
-mirrorselect -i -r -o &gt;&gt; /etc/portage/make.conf
-echo 'MAKEOPTS="-j5"' &gt;&gt; /etc/portage/make.conf
-</code></pre>
-
-<h3 id="setup-useflags">Setup useflags</h3>
-
-<p>Setup any use flags you want to use, ether by manually editing /etc/portage/make.conf <br />
-or my using ufed or euse</p>
-
-<pre><code>emerge ufed
+<p>The next app to install is ufed for managing use flags.
+I&#39;d recomend finishing off this section first for emerging the system, before setting up any additional use flags.
+As soon as you start to turn use flags on it can be very easy to pull in a lot of packages as part of an update</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge ufed
 ufed
-</code></pre>
-
-<h3 id="setup-02locale-file">Setup 02locale file</h3>
-
-<pre><code>nano -w /etc/env.d/02locale
-</code></pre>
-
+</code></pre></div>
+<h3>Setup 02locale file</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/env.d/02locale
+</code></pre></div>
 <p>For British locales</p>
-
-<pre><code>LANG="en_GB.UTF-8"
-LC_COLLATE="C"
-</code></pre>
-
-<h3 id="setup-02locale-file-1">Setup 02locale file</h3>
-
-<pre><code>nano -w /etc/locale.gen
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">LANG=&quot;en_GB.UTF-8&quot;
+LC_COLLATE=&quot;C&quot;
+</code></pre></div>
+<h3>Setup 02locale file</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/locale.gen
+</code></pre></div>
 <p>For British locales</p>
-
-<pre><code>en_GB ISO-8859-1
+<div class="highlight"><pre><code class="language-text" data-lang="text">en_GB ISO-8859-1
 en_GB.UTF-8 UTF-8
-</code></pre>
-
+</code></pre></div>
 <p>Regenerate locale</p>
-
-<pre><code>env-update
+<div class="highlight"><pre><code class="language-text" data-lang="text">env-update
 locale-gen
-</code></pre>
+</code></pre></div>
+<h2>Package Setup</h2>
 
-<h2 id="package-setup">Package Setup</h2>
-
-<h3 id="install-of-additional-tools">Install of additional tools</h3>
+<h3>Install of additional tools</h3>
 
 <p>Lets install some additional tools for package management <br />
-layman is useful for overlays, and gentoolkit is usefull for revdep-rebuild</p>
-
-<pre><code>emerge layman
+layman is useful for overlays, and gentoolkit is usefull for revdep-rebuild
+usbbutils is for lsusb</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge layman
 emerge gentoolkit
-</code></pre>
-
-<h3 id="updating-the-packages">Updating the Packages</h3>
+emerge usbutils
+</code></pre></div>
+<h3>Updating the Packages</h3>
 
 <p>Next lets do some updates and rebuilds <br />
-Some of this is probably optional, but I’ve included for info</p>
+Some of this is probably optional, but I&#39;ve included for info</p>
 
 <p>Lets do some world updates</p>
-
-<pre><code>emerge -vpuD --newuse world
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge -vpuD --newuse world
 emerge -vuD --newuse world
 emerge --update --newuse --deep --with-bdeps=y @world
-</code></pre>
-
+</code></pre></div>
 <p>Remerge libtool to avoid further potential problems</p>
-
-<pre><code>emerge --oneshot libtool
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --oneshot libtool
+</code></pre></div>
 <p>Lets do some cleaning for perl</p>
-
-<pre><code>perl-cleaner --all
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">perl-cleaner --all
+</code></pre></div>
 <p>Lets run python updater</p>
-
-<pre><code>python-updater
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">python-updater
+</code></pre></div>
 <p>Lets remerge the system just to be safe</p>
-
-<pre><code>emerge system
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge system
+</code></pre></div>
 <p>Now lets do a depclean <br />
-Note on my system because nano wasn’t recorded in the world file <br />
-This uninstalled nano, so you may want to re-install it afterwards if it’s removed</p>
-
-<pre><code>emerge --depclean
-</code></pre>
-
+Note on my system because nano wasn&#39;t recorded in the world file <br />
+This uninstalled nano, so you may want to re-install it afterwards if it&#39;s removed</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge -p --depclean
+emerge --depclean
+</code></pre></div>
 <p>Next a revdep-rebuild</p>
-
-<pre><code>revdep-rebuild -p
+<div class="highlight"><pre><code class="language-text" data-lang="text">revdep-rebuild -p
 revdep-rebuild
-</code></pre>
-
-<h3 id="re-compiling-everything">Re-compiling everything</h3>
+</code></pre></div>
+<p>Let&#39;s make sure package.accept_keywords is a directory</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">mkdir /etc/portage/package.accept_keywords
+echo &quot;&quot; &gt;/etc/portage/package.accept_keywords/default.keywords
+</code></pre></div>
+<h3>Re-compiling everything</h3>
 
 <p>If you happen to change your cflags for any reason within make.conf <br />
 The recompiling everything should optimise everything with the latest cflgas <br />
 (but will also take a long time to do)</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge -e system &amp;&amp; emerge -e world
+</code></pre></div>
+<h2>Aditional Setup / Tools</h2>
 
-<pre><code>emerge -e system &amp;&amp; emerge -e world
-</code></pre>
+<h3>Testing the Hard disk speed</h3>
 
-<h2 id="aditional-setup--tools">Aditional Setup / Tools</h2>
+<p>In order to check the speed of the hard disk</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge hdparm
+hdparm -tT /dev/sda
+</code></pre></div>
+<h3>Setup Software Clock</h3>
 
-<h3 id="setup-software-clock">Setup Software Clock</h3>
-
-<p>Next the rpi doesn’t have a hardware clock, so we need to enable the software clock instead</p>
-
-<pre><code>rc-update add swclock boot
+<p>Next the rpi doesn&#39;t have a hardware clock, so we need to enable the software clock instead</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">rc-update add swclock boot
 rc-update del hwclock boot
-</code></pre>
-
+</code></pre></div>
 <p>To install ntp for syncing the time over the network</p>
-
-<pre><code>emerge ntp
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge ntp
 /etc/init.d/ntp-client start
 rc-update add ntp-client default
-</code></pre>
-
-<p>One of the problems I’ve had is with ntp-client starting before wlan can finish starting.
+</code></pre></div>
+<p>One of the problems I&#39;ve had is with ntp-client starting before wlan can finish starting.
 As a quick fix, first create a new file</p>
-
-<pre><code>nano -w /etc/local.d/10_ntp-client.start
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/local.d/10_ntp-client.start
+</code></pre></div>
 <p>Put the following in it</p>
-
-<pre><code>#!/bin/bash
+<div class="highlight"><pre><code class="language-text" data-lang="text">#!/bin/bash
 sleep 10s &amp;&amp; /etc/init.d/ntp-client restart
-</code></pre>
-
+</code></pre></div>
 <p>Make the file executable</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">chmod 744 /etc/local.d/10_ntp-client.start
+</code></pre></div>
+<p>There&#39;s some more details here on setting up a dispatcher with ntp <a href="https://fitzcarraldoblog.wordpress.com/2012/06/03/synchronise-your-gentoo-linux-clock-with-an-internet-time-server/">Link</a></p>
 
-<pre><code>chmod 744 /etc/local.d/10_ntp-client.start
-</code></pre>
-
-<p>There’s some more details here on setting up a dispatcher with ntp <a href="https://fitzcarraldoblog.wordpress.com/2012/06/03/synchronise-your-gentoo-linux-clock-with-an-internet-time-server/">Link</a></p>
-
-<h3 id="enable-ssh-deamon">Enable ssh deamon</h3>
-
-<p>To enable ssh deamon / start at boot</p>
-
-<pre><code>/etc/init.d/sshd start
-rc-update add sshd default
-</code></pre>
-
-<h3 id="cpu-power-scaling">CPU Power Scaling</h3>
+<h3>CPU Power Scaling</h3>
 
 <p>To enable CPU Power Scaling</p>
-
-<pre><code>emerge --autounmask-write sys-power/cpupower
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --autounmask-write sys-power/cpupower
 etc-update
 emerge sys-power/cpupower
 /etc/init.d/cpupower start
 rc-update add cpupower default
-</code></pre>
-
+</code></pre></div>
 <p>To set the scaling options</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/conf.d/cpupower
 
-<pre><code>nano -w /etc/conf.d/cpupower
-
-START_OPTS="--governor ondemand"
-STOP_OPTS="--governor performance"
-</code></pre>
-
+START_OPTS=&quot;--governor ondemand&quot;
+STOP_OPTS=&quot;--governor performance&quot;
+</code></pre></div>
 <p>To check the current mode</p>
-
-<pre><code>cpupower frequency-info
-</code></pre>
-
-<h3 id="gpu-memory">GPU Memory</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">cpupower frequency-info
+</code></pre></div>
+<h3>GPU Memory</h3>
 
 <p>We can optionally set the amount of memory used by the gpu within /boot/config.txt</p>
-
-<pre><code>nano /boot/config.txt
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano /boot/config.txt
 
 gpu_mem=XXX
-</code></pre>
-
+</code></pre></div>
 <p>TODO</p>
 
 <ul>
-  <li>default option?</li>
-  <li>same settings for rpi2? / max value?</li>
+<li>default option?</li>
+<li>same settings for rpi2? / max value?</li>
 </ul>
 
-<h3 id="kernel-modules">Kernel Modules</h3>
+<h3>Kernel Modules</h3>
 
 <p>One of next things to setup is a list of kernel modules to auto load at boot</p>
-
-<pre><code>nano -w /etc/conf.d/modules
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/conf.d/modules
 
 # RPI GPIO Access
-modules="${modules} i2c_bcm2708 spi_bcm2708 spi_bcm2835 w1-gpio "
+modules=&quot;${modules} i2c_bcm2708 spi_bcm2708 spi_bcm2835 w1-gpio &quot;
 
 # WatchDog / Random Number Generator
-modules="${modules} bcm2708-rng bcm2708_wdog "
+modules=&quot;${modules} bcm2708-rng bcm2708_wdog &quot;
 
 # ALSA / Audio Support
-modules="${modules} snd_bcm2835 "
+modules=&quot;${modules} snd_bcm2835 &quot;
 
-# Video 4 Linux Rpi (Doesn't currently work)
-#modules="${modules} bcm2835_v4l2 "
-</code></pre>
-
-<p>For some reason I’ve not managed to get the video 4 linux driver working just yet <br />
+# Video 4 Linux Rpi (Doesn&#39;t currently work)
+#modules=&quot;${modules} bcm2835_v4l2 &quot;
+</code></pre></div>
+<p>For some reason I&#39;ve not managed to get the video 4 linux driver working just yet <br />
 It might be something to do with a difference between the rpi and the rpi2</p>
 
-<h3 id="audio-support">Audio support</h3>
+<h3>Audio support</h3>
 
 <p>As a first step the best approach is to first enable the alsa and oss use flags under gentoo <br />
-Enabling both shouldn’t hurt, oss used to be depreciated (v3) but there is now a V4 alternative to alsa</p>
+Enabling both shouldn&#39;t hurt, oss used to be depreciated (v3) but there is now a V4 alternative to alsa</p>
 
 <p>To emerge some needed tools</p>
-
-<pre><code>emerge alsa-utils
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge alsa-utils
 emerge alsa-plugins
-</code></pre>
-
+</code></pre></div>
 <p>Next to edit the alsa config</p>
-
-<pre><code>nano -w /etc/modprobe.d/alsa.conf
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/modprobe.d/alsa.conf
 
 alias snd-card-0 snd_bcm2835
 alias sound-slot-0 snd-card-0
-</code></pre>
-
+</code></pre></div>
 <p>Next lets add the alsa service to the boot run level and start</p>
-
-<pre><code>rc-update add alsasound boot
+<div class="highlight"><pre><code class="language-text" data-lang="text">rc-update add alsasound boot
 /etc/init.d/alsasound start
-</code></pre>
-
+</code></pre></div>
 <p>To test the speaker output</p>
-
-<pre><code>speaker-test -t wav -c 2
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">speaker-test -t wav -c 2
+</code></pre></div>
 <p>To change the volume</p>
-
-<pre><code>alsamixer
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">alsamixer
+</code></pre></div>
 <p>Lists available devices</p>
-
-<pre><code>aplay -L
+<div class="highlight"><pre><code class="language-text" data-lang="text">aplay -L
 aplay --list-devices
-</code></pre>
-
+</code></pre></div>
 <p>To show the current selected ouput (0=auto, 1=analog, 2=HDMI)</p>
-
-<pre><code>amixer cget numid=3
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">amixer cget numid=3
+</code></pre></div>
 <p>To force the output to hdmi (auto works okay as well)</p>
-
-<pre><code>amixer cset numid=3 2
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">amixer cset numid=3 2
+</code></pre></div>
 <p>To play some mp3s</p>
-
-<pre><code>emerge mpg123
-wget --content-disposition "http://www.youtube-mp3.org/get?video_id=smE-uIljiGo&amp;ts_create=1428237573&amp;r=ODYuMTYuMTguNDQ%3D&amp;h2=0b7442b1b19de70416ce96a7672a53ba&amp;s=145910"
-mpg123 "Ronald Jenkees - Guitar Sound.mp3"
-</code></pre>
-
-<h4 id="additional-links--sources-of-information">Additional Links / Sources of information</h4>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge mpg123
+wget --content-disposition &quot;http://www.youtube-mp3.org/get?video_id=smE-uIljiGo&amp;ts_create=1428237573&amp;r=ODYuMTYuMTguNDQ%3D&amp;h2=0b7442b1b19de70416ce96a7672a53ba&amp;s=145910&quot;
+mpg123 &quot;Ronald Jenkees - Guitar Sound.mp3&quot;
+</code></pre></div>
+<h4>Additional Links / Sources of information</h4>
 
 <ul>
-  <li><a href="http://wiki.gentoo.org/wiki/ALSA">http://wiki.gentoo.org/wiki/ALSA</a></li>
-  <li><a href="https://wiki.gentoo.org/wiki/OSS">https://wiki.gentoo.org/wiki/OSS</a></li>
-  <li><a href="http://cagewebdev.com/index.php/raspberry-pi-getting-audio-working/">http://cagewebdev.com/index.php/raspberry-pi-getting-audio-working/</a></li>
+<li><a href="http://wiki.gentoo.org/wiki/ALSA">http://wiki.gentoo.org/wiki/ALSA</a></li>
+<li><a href="https://wiki.gentoo.org/wiki/OSS">https://wiki.gentoo.org/wiki/OSS</a></li>
+<li><a href="http://cagewebdev.com/index.php/raspberry-pi-getting-audio-working/">http://cagewebdev.com/index.php/raspberry-pi-getting-audio-working/</a></li>
 </ul>
 
     </section>

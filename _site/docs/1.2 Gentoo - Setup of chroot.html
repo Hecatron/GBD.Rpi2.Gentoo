@@ -8,6 +8,7 @@
 
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 <link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/stylesheet.css">
+<link rel="stylesheet" type="text/css" media="screen" href="/GBD.Rpi2.Gentoo/assets/css/pygments-default.css">
 
 </head>
 <body>
@@ -28,166 +29,139 @@
 
 <div id="main_content_wrap" class="outer">
     <section id="main_content" class="inner">
-        <h1 id="gentoo---setup-of-chroot">1.2 Gentoo - Setup of chroot</h1>
+        <h1>1.2 Gentoo - Setup of chroot</h1>
 
-<h2 id="overview">Overview</h2>
+<h2>Overview</h2>
 
-<p>Next we’re going to set things up within the chroot <br />
-From this point onwards it’s assumed that your already inside the chroot within /mnt/gentoo</p>
+<p>Next we&#39;re going to set things up within the chroot <br />
+From this point onwards it&#39;s assumed that your already inside the chroot within /mnt/gentoo</p>
 
-<h2 id="general-configuration">General Configuration</h2>
+<h2>General Configuration</h2>
 
-<h3 id="setup-the-timezone">Setup the Timezone</h3>
+<h3>Setup the Timezone</h3>
 
 <p>Lets setup our local timezone <br />
-I’m using British time here</p>
-
-<pre><code>ls /usr/share/zoneinfo
+I&#39;m using British time here</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">ls /usr/share/zoneinfo
 cp /usr/share/zoneinfo/Europe/London /etc/localtime
-echo "Europe/London" &gt; /etc/timezone
+echo &quot;Europe/London&quot; &gt; /etc/timezone
 date
-</code></pre>
-
-<h3 id="setup-the-gentoo-profile">Setup the Gentoo profile</h3>
+</code></pre></div>
+<h3>Setup the Gentoo profile</h3>
 
 <p>To list all gentoo profiles available <br />
-I’m already using the default one which is default/linux/arm/13.0/armv7a</p>
-
-<pre><code>eselect profile list
-</code></pre>
-
-<h3 id="setup-the-hostname">Setup the Hostname</h3>
+I&#39;m already using the default one which is default/linux/arm/13.0/armv7a</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">eselect profile list
+</code></pre></div>
+<h3>Setup the Hostname</h3>
 
 <p>Lets setup the hostname</p>
-
-<pre><code>nano -w /etc/conf.d/hostname
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/conf.d/hostname
 &lt;change the host name in the config and save&gt;
-</code></pre>
-
-<h3 id="setting-up-fstab">Setting up fstab</h3>
+</code></pre></div>
+<h3>Setting up fstab</h3>
 
 <p>To setup fstab (make sure you in the chroot) <br />
-Because I’m using a USB disk here</p>
-
-<pre><code>nano -w /etc/fstab
+Because I&#39;m using a USB disk here</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/fstab
 
 /dev/mmcblk0p5          /boot           vfat            defaults        0 2
 /dev/sda3               /               ext4            noatime         0 1
 /dev/sda2               none            swap            sw              0 0
-</code></pre>
-
-<h3 id="set-the-root-password">Set the root password</h3>
+</code></pre></div>
+<h3>Set the root password</h3>
 
 <p>Within the chroot we want to setup the root password</p>
-
-<pre><code>passwd
+<div class="highlight"><pre><code class="language-text" data-lang="text">passwd
 &lt;enter a new password for root&gt;
-</code></pre>
-
-<h3 id="setup-keymaps">Setup keymaps</h3>
+</code></pre></div>
+<h3>Setup keymaps</h3>
 
 <p>In my case I want a british keymap so we edit /etc/conf.d/keymaps</p>
-
-<pre><code>ls /usr/share/keymaps/i386/qwerty
+<div class="highlight"><pre><code class="language-text" data-lang="text">ls /usr/share/keymaps/i386/qwerty
 nano -w /etc/conf.d/keymaps
 
-&lt;set keymap="uk"&gt;
-</code></pre>
-
-<h3 id="inittab-setup">Inittab Setup</h3>
+&lt;set keymap=&quot;uk&quot;&gt;
+</code></pre></div>
+<h3>Inittab Setup</h3>
 
 <p>Edit the /etc/inittab file in the gentoo install <br />
 comment out the line under Serial Consoles</p>
-
-<pre><code>nano -w /etc/inittab
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/inittab
 
 #s0:12345:respawn:/sbin/agetty -L 9600 ttyS0 vt100
-</code></pre>
-
-<h3 id="setting-up-makeconf">Setting up make.conf</h3>
+</code></pre></div>
+<h3>Setting up make.conf</h3>
 
 <p>For gcc 4.8 we need to change the CFLAGS setting within /etc/portage/make.conf</p>
 
 <ul>
-  <li><a href="http://www.gentoo-wiki.info/CFLAGS_matrix">Gentoo CFLAGS matrix</a></li>
-  <li><a href="https://wiki.gentoo.org/wiki/GCC_optimization">GCC Optimisations</a></li>
-  <li><a href="http://www.raspberrypi.org/forums/viewtopic.php?f=66&amp;t=98897">CFLAGS thread</a></li>
+<li><a href="http://www.gentoo-wiki.info/CFLAGS_matrix">Gentoo CFLAGS matrix</a></li>
+<li><a href="https://wiki.gentoo.org/wiki/GCC_optimization">GCC Optimisations</a></li>
+<li><a href="http://www.raspberrypi.org/forums/viewtopic.php?f=66&amp;t=98897">CFLAGS thread</a></li>
 </ul>
 
 <p>There may be better cflag settings for the rpi2, but I think these are the best ones so far</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/portage/make.conf
 
-<pre><code>nano -w /etc/portage/make.conf
-
-CFLAGS="-O2 -pipe -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard"
-CXXFLAGS="${CFLAGS}"
-</code></pre>
-
-<h3 id="setup-sys-logger-and-cron-deamon">Setup sys logger and cron deamon</h3>
+CFLAGS=&quot;-O2 -pipe -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard&quot;
+CXXFLAGS=&quot;${CFLAGS}&quot;
+</code></pre></div>
+<h3>Setup sys logger and cron deamon</h3>
 
 <p>Lets install some packages and set them to run at boot</p>
-
-<pre><code>emerge syslog-ng
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge syslog-ng
 emerge vixie-cron
 emerge logrotate
 rc-update add syslog-ng default
 rc-update add vixie-cron default
-</code></pre>
+</code></pre></div>
+<h2>Setup networking</h2>
 
-<h2 id="setup-networking">Setup networking</h2>
+<h3>Install Networking Packages</h3>
 
-<h3 id="install-networking-packages">Install Networking Packages</h3>
-
-<p>Since we’re going to want dhcp / wireless support later on</p>
-
-<pre><code>emerge dhcpcd
+<p>Since we&#39;re going to want dhcp / wireless support later on</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge dhcpcd
 emerge wireless-tools
 emerge wpa_supplicant
 emerge linux-firmware
-</code></pre>
-
+rc-update add sshd default
+</code></pre></div>
 <ul>
-  <li><a href="http://wiki.gentoo.org/wiki/Handbook:X86/Networking/Wireless">Gentoo Docs - Networking / Wireless</a></li>
+<li><a href="http://wiki.gentoo.org/wiki/Handbook:X86/Networking/Wireless">Gentoo Docs - Networking / Wireless</a></li>
 </ul>
 
-<h3 id="wpa-supplicant-config">Wpa Supplicant Config</h3>
+<h3>Wpa Supplicant Config</h3>
 
 <p>If your using wpa for wireless (most people do) we first need to tell the setup to use wpa_supplicant in preference</p>
-
-<pre><code>nano -w /etc/conf.d/net
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /etc/conf.d/net
 
 # Prefer wpa_supplicant over wireless-tools
-modules="wpa_supplicant"
-</code></pre>
-
+modules=&quot;wpa_supplicant&quot;
+</code></pre></div>
 <p>Now for the wpa_supplicant.conf file</p>
-
-<pre><code>cp /usr/share/doc/wpa_supplicant-2.2-r1/wpa_supplicant.conf.bz2 /etc/wpa_supplicant
+<div class="highlight"><pre><code class="language-text" data-lang="text">cp /usr/share/doc/wpa_supplicant-2.4-r3/wpa_supplicant.conf.bz2 /etc/wpa_supplicant
 cd /etc/wpa_supplicant/
 bzip2 -d wpa_supplicant.conf.bz2
 nano -w wpa_supplicant.conf
-</code></pre>
-
+</code></pre></div>
 <p>Comment out all the network sections at the bottom except for one, and use that to connect <br />
 see this <a href="https://kerneldriver.wordpress.com/2012/10/21/configuring-wpa2-using-wpa_supplicant-on-the-raspberry-pi/">Link</a> for an example setup</p>
 
-<h3 id="wlan-symbolic-link">WLan Symbolic Link</h3>
+<h3>WLan Symbolic Link</h3>
 
 <p>Lets create a symbolic link for the network</p>
-
-<pre><code>cd /etc/init.d
+<div class="highlight"><pre><code class="language-text" data-lang="text">cd /etc/init.d
 ln -s net.lo net.wlan0
 rc-update add net.wlan0 default
-</code></pre>
-
-<h3 id="other-commands">Other Commands</h3>
+</code></pre></div>
+<h3>Other Commands</h3>
 
 <p>some rebooting and fiddling may be required to get this to work later on <br />
 Once your booted directly into gentoo try the following if your having problems</p>
-
-<pre><code>iwconfig
+<div class="highlight"><pre><code class="language-text" data-lang="text">iwconfig
 ifconfig wlan0 up
-</code></pre>
-
+</code></pre></div>
     </section>
 </div>
 
