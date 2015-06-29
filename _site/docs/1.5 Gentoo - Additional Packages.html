@@ -44,6 +44,9 @@ It&#39;s best to check the git use flag is enabled as a starting point.
 Next if layman isn&#39;t already installed</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">emerge layman
 </code></pre></div>
+<p>Syncronise the latest set of available layman sources (this also allows us to add the other overlay later on)</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">layman -S
+</code></pre></div>
 <p>Next we need to make sure the overlays are picked up by portage</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">echo &quot;source /var/lib/layman/make.conf&quot; &gt;&gt; /etc/portage/make.conf
 </code></pre></div>
@@ -165,9 +168,9 @@ To use it in place of openrc (the default gentoo init system) we just need to mo
 
 <p>The RPi should have a hardware random number generator (also true for rpi2) <br />
 First lets install the tools / load the kernel module into memory</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --autounmask-write rng-utils
+<div class="highlight"><pre><code class="language-text" data-lang="text">emerge --autounmask-write rng-tools
 etc-update
-emerge rng-utils
+emerge rng-tools
 modprobe bcm2708-rng
 </code></pre></div>
 <p>Next let&#39;s alter a config settings</p>
