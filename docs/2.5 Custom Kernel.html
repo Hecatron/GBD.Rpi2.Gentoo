@@ -83,14 +83,16 @@ to act as a basis for the linux sources during compilation (such as additional d
 <p>selecting a different kernel that the link needs to point to can be done via eselect kernel</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">eselect kernel list
 </code></pre></div>
-<p>To clean the sources</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">make distclean
-</code></pre></div>
 <h3>Configuring the Kernel</h3>
 
-<p>The default configuration for the rpi2 can be setup by doing the following:</p>
+<p>First lets jump into the kernel directory</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">cd /usr/src/linux
-make bcm2709_defconfig
+</code></pre></div>
+<p>Optionally to fully clean the sources</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">make distclean
+</code></pre></div>
+<p>The default configuration for the rpi2 can be setup by doing the following:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">make bcm2709_defconfig
 </code></pre></div>
 <p>This will output a file <strong>.config</strong> which is the config that will be used for building.
 If you want to pull back the config that currently running at present in memory</p>
@@ -121,7 +123,7 @@ that suggests we may get some noticable speed increases by compiling our own ker
 
 <p>First to install the kernel modules. This should copy the kernel modules
 From /usr/src/linux into /lib/modules/kernel-version</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">make modules_install1
+<div class="highlight"><pre><code class="language-text" data-lang="text">make modules_install
 </code></pre></div>
 <p>Next to install the kernel image</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">cd /usr/src/linux
@@ -135,7 +137,7 @@ However with more recent bootloaders this is no longer required, in fact I found
 cp kernel7.img kernel7-raspian.img
 </code></pre></div>
 <p>Finally lets add some new conifg options to cmdline.txt</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /boot/cmdline.txt
+<div class="highlight"><pre><code class="language-text" data-lang="text">nano -w /boot/config.txt
 
 # Original
 #kernel=kernel7-raspian.img
