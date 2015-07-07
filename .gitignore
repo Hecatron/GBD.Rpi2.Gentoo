@@ -1,4 +1,4 @@
 
 # We need to keep site included for subtree pushing to gh-pages
 # _site
-todo.md
+/todo.md
