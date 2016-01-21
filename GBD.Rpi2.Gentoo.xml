@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <repositories encoding="UTF-8" version="1.1">
   <repo priority="50" quality="experimental">
-    <name>GBD.Rpi2.Gentoo</name>
+    <name>GBD-Rpi2-Gentoo</name>
     <description>Custom overlay for the Raspberry Pi 2</description>
     <homepage>https://github.com/grbd/GBD.Rpi2.Gentoo</homepage>
     <owner>
