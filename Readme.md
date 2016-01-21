@@ -70,5 +70,3 @@ I'm just using this as a stop gap untill that's released
 
 ## TODO
 
- * Update the ebuilds for latest kde plasma etc
- * Re-try this out on a Rpi2 with a fresh build and a 2.5" USB Hard Disk
